@@ -11,7 +11,7 @@ final class TabBarController: UITabBarController {
     
     private let trackersTabBarTitle = "Трекеры"
     private let statisticsTabBarTitle = "Статистика"
-    private let tapBarHieght: CGFloat = 90.0
+    private let tapBarHight: CGFloat = 90.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +35,7 @@ final class TabBarController: UITabBarController {
     private func setupTabBarView() {
         tabBar.tintColor = .systemBlue
         tabBar.unselectedItemTintColor = .gray
-        tabBar.addTopBorder(with: .gray, andHeight: 1)
+        tabBar.addTopBorder(with: UIColor(named: "BlackTB") ?? .gray, andHeight: 1)
     }
 }
 

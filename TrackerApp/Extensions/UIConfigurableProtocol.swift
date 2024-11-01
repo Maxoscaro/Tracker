@@ -6,7 +6,7 @@
 //
 
 import Foundation
-protocol ConfigurableProtocol {
+protocol UIViewConfigurableProtocol {
     func setupUI()
     func setupConstraints()
 }

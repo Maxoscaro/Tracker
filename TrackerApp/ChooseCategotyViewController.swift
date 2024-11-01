@@ -1,5 +1,5 @@
 //
-//  ChooseCategotyViewController.swift
+//  ChooseCategoryViewController.swift
 //  TrackerApp
 //
 //  Created by Maksim on 16.10.2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ChooseCategotyViewController: UIViewController {
+final class ChooseCategoryViewController: UIViewController {
     
     // MARK: - Dependencies
     
@@ -19,7 +19,7 @@ final class ChooseCategotyViewController: UIViewController {
     private lazy var screenTitle: UILabel = {
         let title = UILabel()
         title.text = "Категория"
-        title.textColor = .black
+        title.textColor = UIColor(named: "BlackYP")
         title.font = .systemFont(ofSize: 16)
         title.translatesAutoresizingMaskIntoConstraints = false
         return title
@@ -28,9 +28,9 @@ final class ChooseCategotyViewController: UIViewController {
     private lazy var addNewCategoryButton: UIButton = {
         let button = UIButton()
         button.setTitle("Добавить категорию", for: .normal)
-        button.backgroundColor = .black
+        button.backgroundColor = UIColor(named: "BlackYP")
         button.layer.cornerRadius = 16
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(UIColor(named: "WhiteYP"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -39,7 +39,7 @@ final class ChooseCategotyViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "WhiteYP")
         setupUI()
         setupConstraints()
     }
@@ -47,7 +47,7 @@ final class ChooseCategotyViewController: UIViewController {
 
     // MARK: - ConfigurableProtocol
         
-extension ChooseCategotyViewController: ConfigurableProtocol {
+extension ChooseCategoryViewController: UIViewConfigurableProtocol {
     
     func setupUI() {
         [screenTitle, addNewCategoryButton].forEach { view.addSubview($0) }

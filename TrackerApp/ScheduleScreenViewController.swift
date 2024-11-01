@@ -24,7 +24,7 @@ final class ScheduleScreenViewController: UIViewController {
     private lazy var screenTitle: UILabel = {
         let title = UILabel()
         title.text = "Расписание"
-        title.textColor = .black
+        title.textColor = UIColor(named: "BlackYP")
         title.font = .systemFont(ofSize: 16)
         title.translatesAutoresizingMaskIntoConstraints = false
         return title
@@ -36,7 +36,10 @@ final class ScheduleScreenViewController: UIViewController {
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.layer.cornerRadius = 16
+        tableView.separatorColor = UIColor(named: "BlackYP")
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        tableView.clipsToBounds = true
+        tableView.tableFooterView = UIView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.isScrollEnabled = false
         return tableView
@@ -45,9 +48,9 @@ final class ScheduleScreenViewController: UIViewController {
     private lazy var doneButton: UIButton = {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
-        button.backgroundColor = .black
+        button.backgroundColor = UIColor(named: "BlackYP")
         button.layer.cornerRadius = 16
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(UIColor(named: "WhiteYP"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         return button
@@ -65,7 +68,7 @@ final class ScheduleScreenViewController: UIViewController {
     // MARK: - Private Methods
     
     private func setupAppearance() {
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "WhiteYP")
     }
     
     private func setupUI() {
@@ -129,7 +132,8 @@ extension ScheduleScreenViewController: UITableViewDelegate, UITableViewDataSour
     
     private func configureCell(_ cell: UITableViewCell, with weekDay: WeekDay, at indexPath: IndexPath) {
         cell.textLabel?.text = weekDay.rawValue
-        cell.backgroundColor = UIColor(named: "BackGround(day)")
+        cell.backgroundColor = UIColor(named: "Background")
+        
         
         let switchView = UISwitch(frame: .zero)
         switchView.tag = indexPath.row
@@ -137,5 +141,21 @@ extension ScheduleScreenViewController: UITableViewDelegate, UITableViewDataSour
         switchView.setOn(switchStatus[indexPath.row], animated: true)
         switchView.addTarget(self, action: #selector(switchStatusChanged), for: .valueChanged)
         cell.accessoryView = switchView
+        
+        if indexPath.row == weekDays.count - 1 {
+                    cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+                }
+        
+        if indexPath.row == 0 {
+                    cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+                    cell.layer.cornerRadius = 16
+                    cell.clipsToBounds = true
+                } else if indexPath.row == weekDays.count - 1 {
+                    cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+                    cell.layer.cornerRadius = 16
+                    cell.clipsToBounds = true
+                } else {
+                    cell.layer.cornerRadius = 0 
+                }
     }
 }

@@ -33,6 +33,8 @@ import UIKit
             searchBar.placeholder = "Поиск"
             searchBar.translatesAutoresizingMaskIntoConstraints = false
             searchBar.backgroundImage = UIImage()
+            searchBar.searchTextField.textColor = UIColor(named: "BlackYP")
+            searchBar.searchTextField.backgroundColor = UIColor(named: "Background")
             return searchBar
         }()
         
@@ -130,7 +132,7 @@ import UIKit
         // MARK: - Private Methods
         
         private func setupView() {
-            view.backgroundColor = .white
+            view.backgroundColor = UIColor(named: "WhiteYP")
             view.addTapGestureToHideKeyboard()
             setupSearchBar()
             setupNavigationBar()
@@ -158,7 +160,7 @@ import UIKit
             let addButton = UIBarButtonItem(barButtonSystemItem: .add,
                                           target: self,
                                           action: #selector(newTrackerCreate))
-            addButton.tintColor = .black
+            addButton.tintColor = UIColor(named: "BlackYP")
             navigationItem.leftBarButtonItem = addButton
             
             navigationItem.title = "Трекеры"
@@ -167,6 +169,11 @@ import UIKit
             let datePick = UIDatePicker()
             datePick.preferredDatePickerStyle = .compact
             datePick.datePickerMode = .date
+            datePick.backgroundColor = UIColor(named: "GrayDP")
+            datePick.overrideUserInterfaceStyle = .light
+            datePick.tintColor = .black
+            datePick.layer.cornerRadius = 8
+            datePick.clipsToBounds = true
             datePick.addTarget(self,
                               action: #selector(datePickerValueChanged(_:)),
                               for: .valueChanged)
@@ -184,7 +191,7 @@ import UIKit
             let label = UILabel()
             label.text = "Что будем отслеживать?"
             label.font = UIFont.systemFont(ofSize: 12)
-            label.textColor = .black
+            label.textColor = UIColor(named: "BlackYP")
             label.translatesAutoresizingMaskIntoConstraints = false
             emptyStateView.addSubview(label)
             
@@ -205,6 +212,7 @@ import UIKit
         
         private func setupCollectionView() {
             view.addSubview(collectionView)
+            collectionView.backgroundColor = UIColor(named: "WhiteYP")
             
             NSLayoutConstraint.activate([
                 collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),

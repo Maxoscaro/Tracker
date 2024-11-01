@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		B51136F82CD23C0900EC6456 /* UITapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51136F72CD23C0900EC6456 /* UITapGesture.swift */; };
 		B5424EA52CB968A700B9D092 /* CreateTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5424EA42CB968A700B9D092 /* CreateTrackerViewController.swift */; };
-		B5424EA72CBE82B500B9D092 /* ConfigurableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5424EA62CBE82B500B9D092 /* ConfigurableProtocol.swift */; };
+		B5424EA72CBE82B500B9D092 /* UIConfigurableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5424EA62CBE82B500B9D092 /* UIConfigurableProtocol.swift */; };
 		B5424EA92CBE9AB300B9D092 /* TrackerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5424EA82CBE9AB300B9D092 /* TrackerType.swift */; };
 		B5A8C6BA2CAFFAAE00B2047D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8C6B92CAFFAAE00B2047D /* AppDelegate.swift */; };
 		B5A8C6BC2CAFFAAE00B2047D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8C6BB2CAFFAAE00B2047D /* SceneDelegate.swift */; };
@@ -52,7 +52,7 @@
 /* Begin PBXFileReference section */
 		B51136F72CD23C0900EC6456 /* UITapGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITapGesture.swift; sourceTree = "<group>"; };
 		B5424EA42CB968A700B9D092 /* CreateTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewController.swift; sourceTree = "<group>"; };
-		B5424EA62CBE82B500B9D092 /* ConfigurableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableProtocol.swift; sourceTree = "<group>"; };
+		B5424EA62CBE82B500B9D092 /* UIConfigurableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConfigurableProtocol.swift; sourceTree = "<group>"; };
 		B5424EA82CBE9AB300B9D092 /* TrackerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerType.swift; sourceTree = "<group>"; };
 		B5A8C6B62CAFFAAE00B2047D /* TrackerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrackerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5A8C6B92CAFFAAE00B2047D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -107,7 +107,7 @@
 		B51136F92CD23C0E00EC6456 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				B5424EA62CBE82B500B9D092 /* ConfigurableProtocol.swift */,
+				B5424EA62CBE82B500B9D092 /* UIConfigurableProtocol.swift */,
 				B51136F72CD23C0900EC6456 /* UITapGesture.swift */,
 			);
 			path = Extensions;
@@ -343,7 +343,7 @@
 				B5A8C6BA2CAFFAAE00B2047D /* AppDelegate.swift in Sources */,
 				B5424EA52CB968A700B9D092 /* CreateTrackerViewController.swift in Sources */,
 				B5A8C6BC2CAFFAAE00B2047D /* SceneDelegate.swift in Sources */,
-				B5424EA72CBE82B500B9D092 /* ConfigurableProtocol.swift in Sources */,
+				B5424EA72CBE82B500B9D092 /* UIConfigurableProtocol.swift in Sources */,
 				B5BD080D2CC123F500DEA98B /* ScheduleScreenViewController.swift in Sources */,
 				B51136F82CD23C0900EC6456 /* UITapGesture.swift in Sources */,
 				B5BD080B2CBFEBC000DEA98B /* ChooseCategotyViewController.swift in Sources */,

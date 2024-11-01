@@ -51,7 +51,7 @@ final class TrackerCell: UICollectionViewCell {
     
     private let countDaysLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = UIColor(named: "BlackYP")
         label.font = UIFont.systemFont(ofSize: 12)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -59,7 +59,7 @@ final class TrackerCell: UICollectionViewCell {
     
     private let plusButton: UIButton = {
         let button = UIButton()
-        button.tintColor = .white
+        button.tintColor = UIColor(named: "WhiteYP")
         button.setImage(UIImage(systemName: "plus"), for: .normal)
         button.imageView?.frame.size = CGSize(width: 8, height: 8)
         button.backgroundColor = .green
@@ -173,7 +173,7 @@ final class TrackerCell: UICollectionViewCell {
 
 // MARK: - ConfigurableProtocol
 
-extension TrackerCell: ConfigurableProtocol {
+extension TrackerCell: UIViewConfigurableProtocol {
     func setupUI() {
         contentView.addSubview(cardView)
         contentView.addSubview(countDaysLabel)
