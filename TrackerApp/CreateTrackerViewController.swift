@@ -19,9 +19,35 @@ final class CreateTrackerViewController: UIViewController {
     
     private var selectedCategory: TrackerCategory?
     private var selectedSchedule = Set<WeekDay>()
+    private var selectedEmojiIndex: IndexPath?
+    private var emojiDelegate = EmojiCollectionViewDelegate()
+    
     private let trackerType: TrackerType
     private let scheduleScreenVC = ScheduleScreenViewController()
     private let categoryVC = ChooseCategoryViewController()
+    private let colors: [UIColor] = [.ypColorSelection1,
+                                     .ypColorSelection2,
+                                     .ypColorSelection3,
+                                     .ypColorSelection4,
+                                     .ypColorSelection5,
+                                     .ypColorSelection6,
+                                     .ypColorSelection7,
+                                     .ypColorSelection8,
+                                     .ypColorSelection9,
+                                     .ypColorSelection10,
+                                     .ypColorSelection11,
+                                     .ypColorSelection12,
+                                     .ypColorSelection13,
+                                     .ypColorSelection14,
+                                     .ypColorSelection15,
+                                     .ypColorSelection16,
+                                     .ypColorSelection17,
+                                     .ypColorSelection18]
+    
+    private let emojis: [String] = [
+        "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶",
+        "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"
+    ]
     
     // MARK: - UI Elements
     
@@ -92,6 +118,25 @@ final class CreateTrackerViewController: UIViewController {
         return button
     }()
     
+    private lazy var emojiCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 5
+        layout.scrollDirection = .vertical
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear //UIColor(named: "BlackYP")
+        collectionView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
+        collectionView.dataSource = emojiDelegate
+        collectionView.delegate = emojiDelegate
+        collectionView.register(EmojiCell.self, forCellWithReuseIdentifier: "EmojiCell")
+        collectionView.register(EmojiHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "EmojiHeader")
+        emojiDelegate.createTrackerVC = self
+      
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
+    }()
+    
     // MARK: - Lifecycle
     
     init(type: TrackerType) {
@@ -137,7 +182,7 @@ final class CreateTrackerViewController: UIViewController {
         createButton.backgroundColor = createButton.isEnabled ? UIColor(named: "BlackYP") : UIColor(named: "GrayYP")
         createButton.titleLabel?.textColor = UIColor(named: "WhiteYP")
     }
-
+    
     private func convertWeekdaysToString(_ selectedWeekdays: Set<WeekDay>) -> String {
         let abbreviations: [WeekDay: String] = [
             .monday: "Пн",
@@ -184,13 +229,24 @@ final class CreateTrackerViewController: UIViewController {
         tableView.reloadData()
         updateCreateButtonState()
     }
+    
+    func getEmojies() -> [String] {
+        emojis
+    }
+    
+    func getSelectedEmojiIndex() -> IndexPath? {
+        selectedEmojiIndex
+    }
+    
+    func setSelectedEmojiIndex(_ indexPath: IndexPath) {
+        selectedEmojiIndex = indexPath
+    }
 }
-
 // MARK: - ConfigurableProtocol
 
 extension CreateTrackerViewController: UIViewConfigurableProtocol {
     func setupUI() {
-        [screenTitle, newTrackerName, tableView, createButton, cancelButton].forEach { view.addSubview($0) }
+        [screenTitle, newTrackerName, tableView, createButton, cancelButton, emojiCollectionView].forEach { view.addSubview($0) }
     }
     
     func setupConstraints() {
@@ -216,7 +272,12 @@ extension CreateTrackerViewController: UIViewConfigurableProtocol {
             cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
-            cancelButton.widthAnchor.constraint(equalTo: createButton.widthAnchor)
+            cancelButton.widthAnchor.constraint(equalTo: createButton.widthAnchor),
+            
+            emojiCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor),
+            emojiCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emojiCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emojiCollectionView.heightAnchor.constraint(equalToConstant: 250)
         ])
     }
 }

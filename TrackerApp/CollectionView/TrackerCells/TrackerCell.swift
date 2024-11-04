@@ -171,7 +171,7 @@ final class TrackerCell: UICollectionViewCell {
     }
 }
 
-// MARK: - ConfigurableProtocol
+// MARK: - UIViewConfigurableProtocol
 
 extension TrackerCell: UIViewConfigurableProtocol {
     func setupUI() {
