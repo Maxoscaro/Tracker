@@ -20,7 +20,9 @@ final class CreateTrackerViewController: UIViewController {
     private var selectedCategory: TrackerCategory?
     private var selectedSchedule = Set<WeekDay>()
     private var selectedEmojiIndex: IndexPath?
+    private var selectedColorIndex: IndexPath?
     private var emojiDelegate = EmojiCollectionViewDelegate()
+    private var colorDelegate = ColorCollectionViewDelegate()
     
     private let trackerType: TrackerType
     private let scheduleScreenVC = ScheduleScreenViewController()
@@ -125,14 +127,31 @@ final class CreateTrackerViewController: UIViewController {
         layout.scrollDirection = .vertical
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear //UIColor(named: "BlackYP")
+        collectionView.backgroundColor = .clear
         collectionView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
         collectionView.dataSource = emojiDelegate
         collectionView.delegate = emojiDelegate
         collectionView.register(EmojiCell.self, forCellWithReuseIdentifier: "EmojiCell")
         collectionView.register(EmojiHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "EmojiHeader")
         emojiDelegate.createTrackerVC = self
-      
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
+    }()
+    
+    private lazy var colorCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 5
+        layout.scrollDirection = .vertical
+        
+        let collectionView =  UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
+        collectionView.dataSource = colorDelegate
+        collectionView.delegate = colorDelegate
+        collectionView.register(ColorCell.self, forCellWithReuseIdentifier: "ColorCell")
+        collectionView.register(ColorHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ColorHeader")
+        colorDelegate.createTrackerVC = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
@@ -234,19 +253,32 @@ final class CreateTrackerViewController: UIViewController {
         emojis
     }
     
+    func getColors() -> [UIColor] {
+        colors
+    }
+    func getSelectedColorsIndex() -> IndexPath? {
+        selectedColorIndex
+    }
+    
     func getSelectedEmojiIndex() -> IndexPath? {
         selectedEmojiIndex
+    }
+    
+    func setSelectedColorIndex(_ indexPath: IndexPath) {
+        selectedColorIndex = indexPath
     }
     
     func setSelectedEmojiIndex(_ indexPath: IndexPath) {
         selectedEmojiIndex = indexPath
     }
+    
+    
 }
 // MARK: - ConfigurableProtocol
 
 extension CreateTrackerViewController: UIViewConfigurableProtocol {
     func setupUI() {
-        [screenTitle, newTrackerName, tableView, createButton, cancelButton, emojiCollectionView].forEach { view.addSubview($0) }
+        [screenTitle, newTrackerName, tableView, createButton, cancelButton, emojiCollectionView, colorCollectionView].forEach { view.addSubview($0) }
     }
     
     func setupConstraints() {
@@ -277,7 +309,13 @@ extension CreateTrackerViewController: UIViewConfigurableProtocol {
             emojiCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor),
             emojiCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             emojiCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            emojiCollectionView.heightAnchor.constraint(equalToConstant: 250)
+            emojiCollectionView.heightAnchor.constraint(equalToConstant: 250),
+            
+            colorCollectionView.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor),
+            colorCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            colorCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            colorCollectionView.heightAnchor.constraint(equalToConstant: 250)
+            
         ])
     }
 }

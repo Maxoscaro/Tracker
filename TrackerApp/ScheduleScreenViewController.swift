@@ -134,7 +134,6 @@ extension ScheduleScreenViewController: UITableViewDelegate, UITableViewDataSour
         cell.textLabel?.text = weekDay.rawValue
         cell.backgroundColor = UIColor(named: "Background")
         
-        
         let switchView = UISwitch(frame: .zero)
         switchView.tag = indexPath.row
         switchView.onTintColor = UIColor.systemBlue
