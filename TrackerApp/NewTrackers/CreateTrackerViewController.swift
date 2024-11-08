@@ -27,31 +27,22 @@ final class CreateTrackerViewController: UIViewController {
     private let trackerType: TrackerType
     private let scheduleScreenVC = ScheduleScreenViewController()
     private let categoryVC = ChooseCategoryViewController()
-    private let colors: [UIColor] = [.ypColorSelection1,
-                                     .ypColorSelection2,
-                                     .ypColorSelection3,
-                                     .ypColorSelection4,
-                                     .ypColorSelection5,
-                                     .ypColorSelection6,
-                                     .ypColorSelection7,
-                                     .ypColorSelection8,
-                                     .ypColorSelection9,
-                                     .ypColorSelection10,
-                                     .ypColorSelection11,
-                                     .ypColorSelection12,
-                                     .ypColorSelection13,
-                                     .ypColorSelection14,
-                                     .ypColorSelection15,
-                                     .ypColorSelection16,
-                                     .ypColorSelection17,
-                                     .ypColorSelection18]
-    
-    private let emojis: [String] = [
-        "🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶",
-        "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"
-    ]
+
     
     // MARK: - UI Elements
+    
+    private lazy var contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = UIColor(named: "WhiteYP")
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
     
     private lazy var screenTitle: UILabel = {
         let title = UILabel()
@@ -124,7 +115,6 @@ final class CreateTrackerViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 5
-        layout.scrollDirection = .vertical
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -134,6 +124,7 @@ final class CreateTrackerViewController: UIViewController {
         collectionView.register(EmojiCell.self, forCellWithReuseIdentifier: "EmojiCell")
         collectionView.register(EmojiHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "EmojiHeader")
         emojiDelegate.createTrackerVC = self
+        collectionView.isScrollEnabled = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
@@ -142,7 +133,6 @@ final class CreateTrackerViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 5
-        layout.scrollDirection = .vertical
         
         let collectionView =  UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -152,6 +142,7 @@ final class CreateTrackerViewController: UIViewController {
         collectionView.register(ColorCell.self, forCellWithReuseIdentifier: "ColorCell")
         collectionView.register(ColorHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ColorHeader")
         colorDelegate.createTrackerVC = self
+        collectionView.isScrollEnabled = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
@@ -172,7 +163,7 @@ final class CreateTrackerViewController: UIViewController {
         setupInitialState()
     }
     
-    // MARK: - Private Methodsвключена
+    // MARK: - Private Methods
     
     private func setupInitialState() {
         view.backgroundColor = UIColor(named: "WhiteYP")
@@ -250,11 +241,11 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     func getEmojies() -> [String] {
-        emojis
+        TrackerConstants.emojis
     }
     
     func getColors() -> [UIColor] {
-        colors
+        TrackerConstants.colors
     }
     func getSelectedColorsIndex() -> IndexPath? {
         selectedColorIndex
@@ -278,23 +269,49 @@ final class CreateTrackerViewController: UIViewController {
 
 extension CreateTrackerViewController: UIViewConfigurableProtocol {
     func setupUI() {
-        [screenTitle, newTrackerName, tableView, createButton, cancelButton, emojiCollectionView, colorCollectionView].forEach { view.addSubview($0) }
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
+        [screenTitle, newTrackerName, tableView, emojiCollectionView, colorCollectionView].forEach { contentView.addSubview($0) }
+        [createButton, cancelButton].forEach { view.addSubview($0) }
     }
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            screenTitle.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 22),
-            screenTitle.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: createButton.topAnchor, constant: -16),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            screenTitle.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 22),
+            screenTitle.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             
             newTrackerName.topAnchor.constraint(equalTo: screenTitle.bottomAnchor, constant: 38),
-            newTrackerName.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            newTrackerName.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            newTrackerName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            newTrackerName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             newTrackerName.heightAnchor.constraint(equalToConstant: 75),
             
             tableView.topAnchor.constraint(equalTo: newTrackerName.bottomAnchor, constant: 24),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             tableView.heightAnchor.constraint(equalToConstant: 150),
+            
+            emojiCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor),
+            emojiCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            emojiCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            emojiCollectionView.heightAnchor.constraint(equalToConstant: 250),
+            
+            colorCollectionView.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor),
+            colorCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            colorCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            colorCollectionView.heightAnchor.constraint(equalToConstant: 250),
+            colorCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
             createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             createButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
@@ -304,18 +321,7 @@ extension CreateTrackerViewController: UIViewConfigurableProtocol {
             cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
-            cancelButton.widthAnchor.constraint(equalTo: createButton.widthAnchor),
-            
-            emojiCollectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor),
-            emojiCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            emojiCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            emojiCollectionView.heightAnchor.constraint(equalToConstant: 250),
-            
-            colorCollectionView.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor),
-            colorCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            colorCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            colorCollectionView.heightAnchor.constraint(equalToConstant: 250)
-            
+            cancelButton.widthAnchor.constraint(equalTo: createButton.widthAnchor)
         ])
     }
 }

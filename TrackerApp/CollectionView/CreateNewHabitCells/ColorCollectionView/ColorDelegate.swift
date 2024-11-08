@@ -32,8 +32,7 @@ final class ColorCollectionViewDelegate: NSObject, UICollectionViewDataSource,
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ColorCell", for: indexPath) as! ColorCell
         guard let color = createTrackerVC?.getColors()[indexPath.item] else { return cell }
-        cell.configure(view: color)
-        cell.setSelected(indexPath == createTrackerVC?.getSelectedColorsIndex())
+        cell.configure(with: color, setSelected: indexPath == createTrackerVC?.getSelectedColorsIndex())
         return cell
     }
     

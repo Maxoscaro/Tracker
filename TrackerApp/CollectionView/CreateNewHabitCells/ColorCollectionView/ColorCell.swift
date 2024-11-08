@@ -13,15 +13,13 @@ final class ColorCell: UICollectionViewCell {
     
     private lazy var selectionView: UIView = {
         let view = UIView()
-        //view.backgroundColor
-        view.layer.borderWidth = 3
-        view.layer.cornerRadius = 8
+        view.layer.masksToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
     return view
     }()
     
     private lazy var colorView: UIView = {
-        let color = UIView()
+        let color = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         color.translatesAutoresizingMaskIntoConstraints = false
         color.layer.cornerRadius = 8
         return color
@@ -41,13 +39,12 @@ final class ColorCell: UICollectionViewCell {
     
     // MARK: - Public Methods
     
-    func configure(view: UIColor) {
-        colorView.backgroundColor = view
-    }
-    
-    func setSelected(_ selected: Bool) {
-        selectionView.layer.borderWidth = selected ? 3 : 0
-    }
+    func configure(with color: UIColor, setSelected: Bool) {
+            colorView.backgroundColor = color
+            let borderColor = color.withAlphaComponent(0.3)
+            contentView.layer.borderWidth = setSelected ? 3 : 0
+            contentView.layer.borderColor = setSelected ? borderColor.cgColor : nil
+        }
 }
 
 // MARK: - UIViewConfigurableProtocol
@@ -56,19 +53,20 @@ extension ColorCell: UIViewConfigurableProtocol {
     func setupUI() {
         contentView.addSubview(selectionView)
         contentView.addSubview(colorView)
+        contentView.layer.cornerRadius = 8
     }
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            selectionView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.77),
-            selectionView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.77),
+            selectionView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
+            selectionView.widthAnchor.constraint(equalTo: widthAnchor),
             selectionView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             selectionView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
             colorView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             colorView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            colorView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
-            colorView.widthAnchor.constraint(equalTo: contentView.widthAnchor)
+            colorView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.77),
+            colorView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.77)
             ])
     }
 }
