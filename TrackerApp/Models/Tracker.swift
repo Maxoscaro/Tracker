@@ -7,14 +7,14 @@
 
 import UIKit
 
-struct Tracker: Identifiable, Equatable {
+struct Tracker: Identifiable, Equatable, Codable {
     let id: UUID
     let title: String
-    let color: UIColor
+    let color: String
     let emoji: String
     let schedule: Set<WeekDay>
     
-    init(id: UUID, title: String, color: UIColor, emoji: String, schedule: Set<WeekDay>) {
+    init(id: UUID, title: String, color: String, emoji: String, schedule: Set<WeekDay>) {
         self.id = id
         self.title = title
         self.color = color

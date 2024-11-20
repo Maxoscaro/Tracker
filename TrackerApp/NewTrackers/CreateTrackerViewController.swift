@@ -21,6 +21,8 @@ final class CreateTrackerViewController: UIViewController {
     private var selectedSchedule = Set<WeekDay>()
     private var selectedEmojiIndex: IndexPath?
     private var selectedColorIndex: IndexPath?
+    private var selectedColor: UIColor?
+    private var selectedEmoji: String?
     private var emojiDelegate = EmojiCollectionViewDelegate()
     private var colorDelegate = ColorCollectionViewDelegate()
     
@@ -216,8 +218,10 @@ final class CreateTrackerViewController: UIViewController {
     @objc private func createButtonTapped() {
         guard let trackerName = newTrackerName.text, !trackerName.isEmpty else { return }
         let categoryTitle = selectedCategory?.title ?? "Важное"
+        let colorSelected = selectedColor?.hexString ?? "000000"
+        let emojiSelected = selectedEmoji ?? "🤔"
         
-        let newTracker = Tracker(id: UUID(), title: trackerName, color: .blue, emoji: "🥇", schedule: selectedSchedule)
+        let newTracker = Tracker(id: UUID(), title: trackerName, color: colorSelected , emoji: emojiSelected, schedule: selectedSchedule)
         
         onTrackerCreated?(newTracker, categoryTitle)
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
@@ -257,10 +261,12 @@ final class CreateTrackerViewController: UIViewController {
     
     func setSelectedColorIndex(_ indexPath: IndexPath) {
         selectedColorIndex = indexPath
+        selectedColor = getColors()[indexPath.item]
     }
     
     func setSelectedEmojiIndex(_ indexPath: IndexPath) {
         selectedEmojiIndex = indexPath
+        selectedEmoji = getEmojies()[indexPath.item]
     }
     
     

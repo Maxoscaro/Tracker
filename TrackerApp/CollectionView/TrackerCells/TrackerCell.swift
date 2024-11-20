@@ -94,11 +94,11 @@ final class TrackerCell: UICollectionViewCell {
         
         cardText.text = tracker.title
         emojiLabel.text = tracker.emoji
-        cardView.backgroundColor = tracker.color
-        
+        cardView.backgroundColor = UIColor(hexString: tracker.color)
+        cellColor = UIColor(hexString: tracker.color) ?? .green
         self.isTrackerComplete = trackersVC?.isTrackerCompleted(tracker, on: date) ?? false
         
-        updateUI(with: tracker.color)
+        updateUI(with: cellColor)
         countDaysLabel.text = "\(durationCountInt) \(convertDays(durationCountInt))"
     }
     
@@ -159,7 +159,7 @@ final class TrackerCell: UICollectionViewCell {
             return
         } else {
             if let tracker = self.tracker {
-                updateUI(with: tracker.color)
+                updateUI(with: cellColor)
             }
             
             if isTrackerComplete {

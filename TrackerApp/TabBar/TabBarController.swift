@@ -21,7 +21,8 @@ final class TabBarController: UITabBarController {
     }
     
     private func setupViewControllers() {
-        let trackersViewController = TrackersViewController()
+        let trackerStore = TrackerStore.shared
+            let trackersViewController = TrackersViewController(trackerStore: trackerStore)
         let statisticsViewController = StatisticsViewController()
         
         trackersViewController.tabBarItem = UITabBarItem(title: trackersTabBarTitle, image: UIImage(named: "PropertyTrackers"), tag: 0)
