@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class TrackersViewController: UIViewController {
+final class TrackersViewController: UIViewController, TrackerStoreDelegate {
     
     // MARK: - Types
     
@@ -81,21 +81,35 @@ final class TrackersViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //clearAllTrackers()
+        trackerStore.delegate = self
         setupView()
         setupInitialState()
     }
     
     // MARK: - Public Methods
     
+    func clearAllTrackers() {
+        do {
+            try TrackerStore.shared.deleteAllTrackers()
+        } catch {
+            
+            print("Не удалось очистить трекеры: \(error)")
+        }
+    }
+    
     func addTracker(_ tracker: Tracker, toCategory categoryTitle: String) {
         guard let trackerCategoryCoreData = categoryStore.getCategoryBy(title: "Важное") else {
             print("Категория с названием \(categoryTitle) не найдена")
             return
         }
-        
         do {
             try trackerStore.createTracker(with: tracker, in: trackerCategoryCoreData)
             print("Трекер \(tracker.title) добавлен в категорию \(categoryTitle)")
+            updateTrackers()
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
         } catch {
             print("Ошибка при создании трекера: \(error)")
         }
@@ -135,6 +149,12 @@ final class TrackersViewController: UIViewController {
             print("Failed to fetch trackers: \(error)")
         }
     }
+    
+    func didUpdateTrackers() {
+           updateUI()
+           collectionView.reloadData()
+        print("Updated")
+       }
     
     func isTrackerCompleted(_ tracker: Tracker, on date: Date) -> Bool {
         return completedTrackers.contains { record in
@@ -235,7 +255,6 @@ final class TrackersViewController: UIViewController {
     }
     
     private func updateUI() {
-        //let hasTrackers = categories.contains { !$0.trackers.isEmpty }
         let hasTrackers = trackerStore.numberOfSections() > 0
         emptyStateView.isHidden = hasTrackers
         collectionView.isHidden = !hasTrackers
@@ -291,6 +310,7 @@ final class TrackersViewController: UIViewController {
         collectionView.reloadData()
         return filteredCategories
     }
+    
     private func updateTrackers() {
         guard let selectedDate = selectedDate else { return }
         
@@ -310,7 +330,7 @@ final class TrackersViewController: UIViewController {
         newTrackerVC.onTrackerCreated = { [weak self] (newTracker: Tracker, category: String) in
             self?.addTracker(newTracker, toCategory: category)
             self?.dismiss(animated: true) {
-                self?.updateTrackers() // Обновляем после закрытия модального окна
+                self?.updateTrackers()
             }
             self?.collectionView.reloadData()
         }
@@ -322,7 +342,7 @@ final class TrackersViewController: UIViewController {
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         selectedDate = sender.date
-        updateTrackers()
+            updateTrackers()
     }
     
     @objc private func newTrackerCreate() {

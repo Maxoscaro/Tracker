@@ -15,7 +15,7 @@ final class TrackerCategoryStore: NSObject {
     static let shared = TrackerCategoryStore()
     private override init() {
         super.init()
-        fetchedResultsController
+        _ = fetchedResultsController
         createDefaultCategoryIfNeeded()
     }
     
@@ -23,7 +23,6 @@ final class TrackerCategoryStore: NSObject {
     private var context: NSManagedObjectContext {
         appDelegate.persistentContainer.viewContext
     }
-    
     
     private var appDelegate: AppDelegate {
         guard let delegate = UIApplication.shared.delegate as? AppDelegate else {

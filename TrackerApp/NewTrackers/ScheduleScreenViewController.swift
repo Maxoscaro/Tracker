@@ -65,6 +65,14 @@ final class ScheduleScreenViewController: UIViewController {
         setupConstraints()
     }
     
+    // MARK: - Public Methods
+
+    func resetSchedule() {
+        selectedWeekDays.removeAll()
+        switchStatus = [Bool](repeating: false, count: 7)
+        tableView.reloadData()
+    }
+
     // MARK: - Private Methods
     
     private func setupAppearance() {

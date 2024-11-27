@@ -29,7 +29,7 @@ final class CreateTrackerViewController: UIViewController {
     private let trackerType: TrackerType
     private let scheduleScreenVC = ScheduleScreenViewController()
     private let categoryVC = ChooseCategoryViewController()
-
+    
     
     // MARK: - UI Elements
     
@@ -160,6 +160,11 @@ final class CreateTrackerViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        resetForm()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupInitialState()
@@ -269,7 +274,20 @@ final class CreateTrackerViewController: UIViewController {
         selectedEmoji = getEmojies()[indexPath.item]
     }
     
-    
+    func resetForm() {
+        newTrackerName.text = ""
+        selectedColor = nil
+        selectedEmoji = nil
+        selectedSchedule.removeAll()
+        selectedCategory = nil
+        selectedColorIndex = nil
+        selectedEmojiIndex = nil
+        updateCreateButtonState()
+        tableView.reloadData()
+        emojiCollectionView.reloadData()
+        colorCollectionView.reloadData()
+        scheduleScreenVC.resetSchedule()
+    }
 }
 // MARK: - ConfigurableProtocol
 

@@ -8,12 +8,20 @@
 import UIKit
 import CoreData
 
+protocol TrackerStoreDelegate: AnyObject {
+    func didUpdateTrackers()
+}
+
 final class TrackerStore: NSObject {
     
     // MARK: - Properties
-
+    
+    weak var delegate: TrackerStoreDelegate?
     static let shared = TrackerStore()
-    private override init() {}
+    private override init() {
+        super.init()
+                fetchedResultsController.delegate = self
+    }
     
         private var context: NSManagedObjectContext {
             appDelegate.persistentContainer.viewContext
@@ -83,6 +91,22 @@ final class TrackerStore: NSObject {
         context.delete(tracker)
         try context.save()
     }
+    func deleteAllTrackers() throws {
+        let fetchRequest: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        
+        do {
+            let trackers = try context.fetch(fetchRequest)
+            for tracker in trackers {
+                context.delete(tracker)
+            }
+            
+            try context.save()
+            delegate?.didUpdateTrackers()
+        } catch {
+            print("Failed to delete all trackers: \(error)")
+            throw error
+        }
+    }
     
     func updateTracker(at indexPath: IndexPath, with newTracker: Tracker) throws {
         let trackerCoreData = fetchedResultsController.object(at: indexPath)
@@ -94,17 +118,19 @@ final class TrackerStore: NSObject {
     }
     
     func fetchTrackers(for date: Date) throws -> [Tracker] {
+        
         guard let weekDay = WeekDay.fromDate(date) else { return [] }
-        
-        fetchedResultsController.fetchRequest.predicate = NSPredicate(
-            format: "schedule CONTAINS[cd] %@",
-            weekDay.rawValue
-        )
-        try fetchedResultsController.performFetch()
-        
-        return fetchedResultsController.fetchedObjects?
-            .compactMap { trackerFromCoreData($0) } ?? []
-    }
+                
+                fetchedResultsController.fetchRequest.predicate = NSPredicate(
+                    format: "schedule CONTAINS[cd] %@",
+                    weekDay.rawValue
+                )
+                try fetchedResultsController.performFetch()
+                
+                return fetchedResultsController.fetchedObjects?
+                    .compactMap { trackerFromCoreData($0) } ?? []
+        }
+    
     
     // MARK: - Private Methods
     
@@ -127,6 +153,15 @@ final class TrackerStore: NSObject {
     }
 }
 // MARK: -  Extensions
+
+extension TrackerStore: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        DispatchQueue.main.async { [weak self] in
+            self?.delegate?.didUpdateTrackers()
+            print("Trackers updated")
+        }
+    }
+}
 
 extension WeekDay {
     static func scheduleFromString(_ string: String) -> Set<WeekDay> {
