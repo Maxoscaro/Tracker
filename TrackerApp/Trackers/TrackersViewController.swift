@@ -99,7 +99,7 @@ final class TrackersViewController: UIViewController, TrackerStoreDelegate {
     }
     
     func addTracker(_ tracker: Tracker, toCategory categoryTitle: String) {
-        guard let trackerCategoryCoreData = categoryStore.getCategoryBy(title: "Важное") else {
+        guard let trackerCategoryCoreData = categoryStore.getCategoryBy(title: categoryTitle) else {
             print("Категория с названием \(categoryTitle) не найдена")
             return
         }
@@ -383,7 +383,6 @@ extension TrackersViewController: UICollectionViewDelegate {
             ofKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: "TrackerHeader",
             for: indexPath) as! TrackerHeader
-        
         header.label.text = trackerStore.header(at: indexPath.section)
         return header
     }

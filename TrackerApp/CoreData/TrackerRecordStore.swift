@@ -37,6 +37,7 @@ final class TrackerRecordStore: NSObject {
             sectionNameKeyPath: nil,
             cacheName: nil
         )
+        
         do {
             try controller.performFetch()
         } catch {
