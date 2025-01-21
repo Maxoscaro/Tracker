@@ -11,7 +11,7 @@ final class CreateCategoryViewController: UIViewController {
     
     weak var delegate: ChooseCategoryViewModel?
     
-     var viewModel: CreateCategoryViewModel
+    var viewModel: CreateCategoryViewModel
     
     init(viewModel: CreateCategoryViewModel) {
         self.viewModel = viewModel
@@ -84,8 +84,10 @@ final class CreateCategoryViewController: UIViewController {
     }
     
     private func bindViewModel() {
-        viewModel.onCategoryCreation = { [weak self] text in self?.categoryNameTextField.text = text
-        }
+        viewModel.onCategoryCreation = { [weak self] text in
+            self?.categoryNameTextField.text = text
+                }
+        
         viewModel.onCreationButtonStateUpdate = { [weak self ] isEnabled in
             guard let self else { return }
             self.doneButton.isEnabled = isEnabled
@@ -100,14 +102,10 @@ final class CreateCategoryViewController: UIViewController {
     
     @objc private func creationButtonTapped(_ sender: UIButton) {
         viewModel.createNewCategory()
-        
-        if let delegate {
-            delegate.loadCategories()
-        }
+        delegate?.loadCategories()
         dismiss(animated: true, completion: nil)
     }
 }
-
 
 extension CreateCategoryViewController: UIViewConfigurableProtocol {
     func setupUI() {
@@ -125,8 +123,8 @@ extension CreateCategoryViewController: UIViewConfigurableProtocol {
             categoryNameTextField.leadingAnchor.constraint(
                 equalTo: view.leadingAnchor, constant: 16),
             categoryNameTextField.trailingAnchor.constraint(
-                equalTo: view.trailingAnchor, constant: -16
-            ),
+                equalTo: view.trailingAnchor, constant: -16),
+            
             categoryNameTextField.heightAnchor.constraint(equalToConstant: 75),
             
             doneButton.bottomAnchor.constraint(

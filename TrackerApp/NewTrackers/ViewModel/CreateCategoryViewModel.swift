@@ -31,7 +31,6 @@ final class CreateCategoryViewModel {
     
                 }
     
-    
     func updateButtonState() {
         onCreationButtonStateUpdate?(isDoneButtonEnabled)
     }

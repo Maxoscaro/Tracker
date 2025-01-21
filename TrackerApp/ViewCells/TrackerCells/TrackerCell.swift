@@ -65,7 +65,7 @@ final class TrackerCell: UICollectionViewCell {
         button.backgroundColor = .green
         button.layer.cornerRadius = 17
         button.clipsToBounds = true
-        button.addTarget(TrackerCell.self, action: #selector(plusButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(plusButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -116,7 +116,7 @@ final class TrackerCell: UICollectionViewCell {
         }
     }
     
-    private func encreaseDurationLabel() {
+    private func increaseDurationLabel() {
         durationCountInt += 1
         countDaysLabel.text = "\(durationCountInt) \(convertDays(durationCountInt))"
         guard let tracker = self.tracker, let selectedDate = selectedDate else { return }
@@ -163,7 +163,7 @@ final class TrackerCell: UICollectionViewCell {
             }
             
             if isTrackerComplete {
-                encreaseDurationLabel()
+                increaseDurationLabel()
             } else {
                 decreaseDurationLabel()
             }
