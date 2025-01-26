@@ -21,6 +21,7 @@ final class TrackersViewController: UIViewController, TrackerStoreDelegate {
     
     var categories: [TrackerCategory] = []
     var completedTrackers: [TrackerRecord] = []
+    let analiticsService: AnalyticsService
     
     // MARK: - Private Properties
     
@@ -68,8 +69,9 @@ final class TrackersViewController: UIViewController, TrackerStoreDelegate {
     
     // MARK: - Initialization
     
-    init(trackerStore: TrackerStore) {
+    init(trackerStore: TrackerStore,  analiticsService: AnalyticsService) {
         self.trackerStore = trackerStore
+        self.analiticsService = analiticsService
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -85,6 +87,13 @@ final class TrackersViewController: UIViewController, TrackerStoreDelegate {
         trackerStore.delegate = self
         setupView()
         setupInitialState()
+        
+        let analyticsEvent = AnalyticsEvent(
+            eventType: .open,
+            screen: "Main",
+            item: nil
+        )
+        analiticsService.sendEvent(analyticsEvent)
     }
     
     // MARK: - Public Methods
@@ -347,6 +356,14 @@ final class TrackersViewController: UIViewController, TrackerStoreDelegate {
     
     @objc private func newTrackerCreate() {
         trackerTypeVC.trackersVC = self
+        
+        let analyticsEvent = AnalyticsEvent(
+            eventType: .click,
+            screen: "Main",
+            item: .add_track
+        )
+        analiticsService.sendEvent(analyticsEvent)
+        
         present(trackerTypeVC, animated: true)
     }
 }
