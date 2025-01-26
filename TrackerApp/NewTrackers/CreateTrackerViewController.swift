@@ -60,7 +60,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var newTrackerName: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введите название трекера"
+        textField.placeholder = LocalizedStrings.NewTracker.placeholderName
         textField.font = UIFont.systemFont(ofSize: 16)
         textField.backgroundColor = UIColor(named: "Background")
         textField.borderStyle = .none
@@ -94,7 +94,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Создать", for: .normal)
+        button.setTitle(LocalizedStrings.NewTracker.createButton, for: .normal)
         button.setTitleColor(UIColor(named: "WhiteYP"), for: .normal)
         button.setTitleColor(.white, for: .disabled)
         button.backgroundColor = UIColor(named: "GrayYP")
@@ -107,7 +107,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Отменить", for: .normal)
+        button.setTitle(LocalizedStrings.NewTracker.cancelButton, for: .normal)
         button.setTitleColor(UIColor(named: "RedYP"), for: .normal)
         button.layer.borderColor = UIColor.red.cgColor
         button.layer.cornerRadius = 16
@@ -190,9 +190,9 @@ final class CreateTrackerViewController: UIViewController {
     private func configureForTrackerType() {
         switch trackerType {
         case .habit:
-            screenTitle.text = "Новая привычка"
+            screenTitle.text = LocalizedStrings.NewTracker.habitTitle
         case .notRegularEvent:
-            screenTitle.text = "Новое нерегулярное событие"
+            screenTitle.text = LocalizedStrings.NewTracker.notRegularEvent
         }
     }
     
@@ -396,7 +396,7 @@ extension CreateTrackerViewController: UITableViewDelegate, UITableViewDataSourc
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17)
         
         if trackerType == .habit && indexPath.row == 1 {
-            cell.textLabel?.text = "Расписание"
+            cell.textLabel?.text = LocalizedStrings.NewTracker.scheduleTitle
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
             cell.detailTextLabel?.text = !selectedSchedule.isEmpty ? convertWeekdaysToString(selectedSchedule) : nil
         } else {
@@ -404,7 +404,7 @@ extension CreateTrackerViewController: UITableViewDelegate, UITableViewDataSourc
                 cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
             }
             
-            cell.textLabel?.text = "Категория"
+            cell.textLabel?.text = LocalizedStrings.NewTracker.categoryTitle
             cell.detailTextLabel?.text = selectedCategory?.title
         }
     }

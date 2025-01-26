@@ -23,28 +23,3 @@ struct Tracker: Identifiable, Equatable, Codable {
     }
 }
 
-enum WeekDay: String, Codable, CaseIterable {
-    case monday = "Понедельник"
-    case tuesday = "Вторник"
-    case wednesday = "Среда"
-    case thursday = "Четверг"
-    case friday = "Пятница"
-    case saturday = "Суббота"
-    case sunday = "Воскресенье"
-    
-    static func fromDate(_ date: Date) -> WeekDay? {
-        let calendar = Calendar.current
-        let weekDayIndex = calendar.component(.weekday, from: date)
-        
-        let weekDays = [
-            WeekDay.sunday,
-            WeekDay.monday,
-            WeekDay.tuesday,
-            WeekDay.wednesday,
-            WeekDay.thursday,
-            WeekDay.friday,
-            WeekDay.saturday
-        ]
-        return weekDays[weekDayIndex - 1]
-    }
-}

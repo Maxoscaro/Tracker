@@ -9,8 +9,8 @@ import UIKit
 
 final class TabBarController: UITabBarController {
     
-    private let trackersTabBarTitle = "Трекеры"
-    private let statisticsTabBarTitle = "Статистика"
+    private let trackersTabBarTitle = LocalizedStrings.TabBar.categories
+    private let statisticsTabBarTitle = LocalizedStrings.TabBar.statistics
     private let tapBarHight: CGFloat = 90.0
     
     override func viewDidLoad() {

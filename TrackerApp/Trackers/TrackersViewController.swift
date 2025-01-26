@@ -34,7 +34,7 @@ final class TrackersViewController: UIViewController, TrackerStoreDelegate {
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.barStyle = .default
-        searchBar.placeholder = "Поиск"
+        searchBar.placeholder = LocalizedStrings.Trackers.searchPlaceHolder
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         searchBar.backgroundImage = UIImage()
         searchBar.searchTextField.textColor = UIColor(named: "BlackYP")
@@ -195,7 +195,7 @@ final class TrackersViewController: UIViewController, TrackerStoreDelegate {
         addButton.tintColor = UIColor(named: "BlackYP")
         navigationItem.leftBarButtonItem = addButton
         
-        navigationItem.title = "Трекеры"
+        navigationItem.title = LocalizedStrings.Trackers.title
         navigationController?.navigationBar.prefersLargeTitles = true
         
         let datePick = UIDatePicker()
@@ -221,7 +221,7 @@ final class TrackersViewController: UIViewController, TrackerStoreDelegate {
         view.addSubview(imageView)
         
         let label = UILabel()
-        label.text = "Что будем отслеживать?"
+        label.text = LocalizedStrings.Trackers.placeholderText
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = UIColor(named: "BlackYP")
         label.translatesAutoresizingMaskIntoConstraints = false

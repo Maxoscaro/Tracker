@@ -10,15 +10,15 @@ import UIKit
 final class OnboardingViewPageController: UIPageViewController {
     
     // MARK: - Private Properties
-    
+
     private lazy var pages: [UIViewController] = {
         let firstScreen = OnboardingScreenViewController(
             backGroundImageString: "OnboardingBackground1",
-            titleText: "Отслеживайте только то, что хотите")
+            titleText: LocalizedStrings.Onboarding.firstTitle )
         
         let secondScreen = OnboardingScreenViewController(
             backGroundImageString: "OnboardingBackground2",
-            titleText: "Даже если это не литры воды и йога")
+            titleText: LocalizedStrings.Onboarding.secondTitle)
         
         return [firstScreen, secondScreen]
     }()
@@ -35,7 +35,7 @@ final class OnboardingViewPageController: UIPageViewController {
     
     private lazy var doneButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitle(LocalizedStrings.Onboarding.buttonText, for: .normal)
         button.backgroundColor = UIColor(named: "BlackYP")
         button.layer.cornerRadius = 16
         button.setTitleColor(UIColor(named: "WhiteYP"), for: .normal)

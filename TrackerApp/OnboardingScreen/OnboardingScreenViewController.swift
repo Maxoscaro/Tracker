@@ -29,7 +29,6 @@ final class OnboardingScreenViewController: UIViewController {
         if let font = UIFont(name: "SFProText-Bold", size: 32) {
                 label.font = font
             } else {
-                // Fallback на случай, если шрифт не найден
                 label.font = .systemFont(ofSize: 32, weight: .bold)
                 print("Failed to load SF Pro Display Bold font")
             }
