@@ -58,6 +58,14 @@
 "saturday" = "Суббота";
 "sunday" = "Воскресенье";
 
+"weekdays.short.monday" = "Пн";
+"weekdays.short.tuesday" = "Вт";
+"weekdays.short.wednesday" = "Ср";
+"weekdays.short.thursday" = "Чт";
+"weekdays.short.friday" = "Пт";
+"weekdays.short.saturday" = "Сб";
+"weekdays.short.sunday" = "Вс";
+
 //MARK: - TabBar
 "tabBar.trackers" = "Трекеры";
 "tabBar.statistics" = "Статистика";

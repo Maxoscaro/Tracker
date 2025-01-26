@@ -205,18 +205,38 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     private func convertWeekdaysToString(_ selectedWeekdays: Set<WeekDay>) -> String {
-        let abbreviations: [WeekDay: String] = [
-            .monday: "Пн",
-            .tuesday: "Вт",
-            .wednesday: "Ср",
-            .thursday: "Чт",
-            .friday: "Пт",
-            .saturday: "Сб",
-            .sunday: "Вс"
-        ]
-        let abbreviationsArray = selectedWeekdays.compactMap { abbreviations[$0] }
-        return abbreviationsArray.joined(separator: ", ")
-    }
+                let currentLocale = Locale.current
+                let orderedWeekDays: [WeekDay] = {
+        
+                    if currentLocale.identifier.hasPrefix("ru") {
+                        return [
+                            .monday,
+                            .tuesday,
+                            .wednesday,
+                            .thursday,
+                            .friday,
+                            .saturday,
+                            .sunday
+                        ]
+                    } else {
+        
+                        return [
+                            .sunday,
+                            .monday,
+                            .tuesday,
+                            .wednesday,
+                            .thursday,
+                            .friday,
+                            .saturday
+                        ]
+                    }
+                }()
+        
+                let orderedSelectedDays = orderedWeekDays.filter { selectedWeekdays.contains($0) }
+                let shortNames = orderedSelectedDays.map { $0.shortName }
+        
+                return shortNames.joined(separator: ", ")
+            }
     
     private func presentCategoryVC() {
         let categoryVC = ChooseCategoryViewController(viewModel: ChooseCategoryViewModel(), currentCategory: selectedCategory)

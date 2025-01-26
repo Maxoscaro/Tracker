@@ -63,4 +63,13 @@ enum LocalizedStrings {
         static let categories = NSLocalizedString("tabBar.trackers", comment: "Трекеры")
         static let statistics = NSLocalizedString("tabBar.statistics", comment:"Ститистика")
     }
+    enum WeekDays {
+        static let shortMonday = NSLocalizedString("weekdays.short.monday", comment: "Short form for Monday")
+        static let shortTuesday = NSLocalizedString("weekdays.short.tuesday", comment: "Short form for Tuesday")
+        static let shortWednesday = NSLocalizedString("weekdays.short.wednesday", comment: "Short form for Wednesday")
+        static let shortThursday = NSLocalizedString("weekdays.short.thursday", comment: "Short form for Thursday")
+        static let shortFriday = NSLocalizedString("weekdays.short.friday", comment: "Short form for Friday")
+        static let shortSaturday = NSLocalizedString("weekdays.short.saturday", comment: "Short form for Saturday")
+        static let shortSunday = NSLocalizedString("weekdays.short.sunday", comment: "Short form for Sunday")
+    }
 }

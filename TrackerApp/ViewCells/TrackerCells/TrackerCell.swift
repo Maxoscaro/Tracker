@@ -99,7 +99,8 @@ final class TrackerCell: UICollectionViewCell {
         self.isTrackerComplete = trackersVC?.isTrackerCompleted(tracker, on: date) ?? false
         
         updateUI(with: cellColor)
-        countDaysLabel.text = "\(durationCountInt) \(convertDays(durationCountInt))"
+        countDaysLabel.text = String.localizedStringWithFormat(
+            NSLocalizedString("daysCount", comment: "Количество дней"), durationCountInt)
     }
     
     // MARK: - Private Methods
@@ -118,34 +119,18 @@ final class TrackerCell: UICollectionViewCell {
     
     private func increaseDurationLabel() {
         durationCountInt += 1
-        countDaysLabel.text = "\(durationCountInt) \(convertDays(durationCountInt))"
+        countDaysLabel.text = String.localizedStringWithFormat(
+            NSLocalizedString("daysCount", comment: "Количество дней"), durationCountInt)
         guard let tracker = self.tracker, let selectedDate = selectedDate else { return }
         trackersVC?.setTrackerComplete(for: tracker, on: selectedDate)
     }
     
     private func decreaseDurationLabel() {
         durationCountInt -= 1
-        countDaysLabel.text = "\(durationCountInt) \(convertDays(durationCountInt))"
+        countDaysLabel.text = String.localizedStringWithFormat(
+            NSLocalizedString("daysCount", comment: "Количество дней"), durationCountInt)
         guard let tracker = self.tracker, let selectedDate = selectedDate else { return }
         trackersVC?.setTrackerIncomplete(for: tracker, on: selectedDate)
-    }
-    
-    private func convertDays(_ count: Int) -> String {
-        let lastDigit = count % 10
-        let lastTwoDigits = count % 100
-        
-        if lastTwoDigits >= 11 && lastTwoDigits <= 19 {
-            return "дней"
-        }
-        
-        switch lastDigit {
-        case 1:
-            return "день"
-        case 2, 3, 4:
-            return "дня"
-        default:
-            return "дней"
-        }
     }
     
     // MARK: - Actions

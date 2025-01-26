@@ -57,6 +57,14 @@
 "saturday" = "Saturday";
 "sunday" = "Sunday";
 
+"weekdays.short.monday" = "Mon";
+"weekdays.short.tuesday" = "Tue";
+"weekdays.short.wednesday" = "Wed";
+"weekdays.short.thursday" = "Thu";
+"weekdays.short.friday" = "Fri";
+"weekdays.short.saturday" = "Sat";
+"weekdays.short.sunday" = "Sun";
+
 //MARK: - TabBar
 "tabBar.trackers" = "Trackers";
 "tabBar.statistics" = "Statistics";

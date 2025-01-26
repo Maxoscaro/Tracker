@@ -19,7 +19,19 @@ public enum WeekDay: String, Codable, CaseIterable {
     var localized: String {
         return NSLocalizedString(self.rawValue, comment: "Weekday name")
     }
-
+    
+    var shortName: String {
+        switch self {
+        case .monday: return LocalizedStrings.WeekDays.shortMonday
+        case .tuesday: return LocalizedStrings.WeekDays.shortTuesday
+        case .wednesday: return LocalizedStrings.WeekDays.shortWednesday
+        case .thursday: return LocalizedStrings.WeekDays.shortThursday
+        case .friday: return LocalizedStrings.WeekDays.shortFriday
+        case .saturday: return LocalizedStrings.WeekDays.shortSaturday
+        case .sunday: return LocalizedStrings.WeekDays.shortSunday
+        }
+    }
+    
     static func fromDate(_ date: Date) -> WeekDay? {
         let calendar = Calendar.current
         let weekDayIndex = calendar.component(.weekday, from: date)
