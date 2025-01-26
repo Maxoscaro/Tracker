@@ -16,12 +16,25 @@ final class TrackerCategoryStore: NSObject {
     private override init() {
         super.init()
         _ = fetchedResultsController
-        createDefaultCategoryIfNeeded()
     }
     
     var chooseCategoryVC: ChooseCategoryViewController?
     private var context: NSManagedObjectContext {
         appDelegate.persistentContainer.viewContext
+    }
+    
+    var categories: [TrackerCategory] {
+        guard let fetchedObjects = fetchedResultsController.fetchedObjects else {
+                print("No fetched objects found")
+                return []
+            }
+            let converted = fetchedObjects.compactMap { entity in
+                let category = convertEntityToCategory(entity)
+                print("Converting entity with title: \(entity.title ?? "nil")")
+                return category
+            }
+            print("Converted \(converted.count) categories")
+            return converted
     }
     
     private var appDelegate: AppDelegate {
@@ -41,6 +54,7 @@ final class TrackerCategoryStore: NSObject {
             sectionNameKeyPath: nil,
             cacheName: nil
         )
+        controller.delegate = self
         do {
             try controller.performFetch()
         } catch {
@@ -59,18 +73,28 @@ final class TrackerCategoryStore: NSObject {
         )
     }
     
-    func addNewCategory(_ category: TrackerCategory) throws {
-        let categoryCoreData = TrackerCategoryCoreData(context: context)
-        categoryCoreData.title = category.title
-        try context.save()
+    func addCategory(title: String) -> TrackerCategoryCoreData {
+        if let existingCategory = getCategoryBy(title: title) {
+            return existingCategory
+        }
+        let category = TrackerCategoryCoreData(context: context)
+        category.title = title
+        saveContext()
+        return category
     }
-    
-    func deleteCategory(at indexPath: IndexPath) throws {
-        let category = fetchedResultsController.object(at: indexPath)
-        context.delete(category)
-        try context.save()
+    func deleteAllCategories() {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "TrackerCategoryCoreData")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try context.execute(deleteRequest)
+            try context.save()
+            try fetchedResultsController.performFetch()
+        } catch {
+            print("Error deleting all categories: \(error)")
+        }
     }
-    
+
     func updateCategory(at indexPath: IndexPath, with newTitle: String) throws {
         let category = fetchedResultsController.object(at: indexPath)
         category.title = newTitle
@@ -86,30 +110,15 @@ final class TrackerCategoryStore: NSObject {
         request.predicate = NSPredicate(format: "title == %@", title)
         
         do {
-            let categoryCoreData = try context.fetch(request) as? [TrackerCategoryCoreData]
-            return categoryCoreData?.first
+            let categoryCoreData = try context.fetch(request)
+            return categoryCoreData.first
         } catch {
             print("Ошибка при загрузке категории: \(error.localizedDescription)")
         }
         return nil
     }
-
-    // MARK: - Private Methods
     
-        private func createDefaultCategoryIfNeeded() {
-            let defaultCategoryTitle = "Важное"
-            if getCategoryBy(title: defaultCategoryTitle) == nil {
-                let defaultCategory = TrackerCategory(title: defaultCategoryTitle, trackers: [])
-                do {
-                    try addNewCategory(defaultCategory)
-                    print("Создана дефолтная категория: \(defaultCategoryTitle)")
-                } catch {
-                    print("Ошибка при создании дефолтной категории: \(error)")
-                }
-            }
-        }
-        
-    private func createTrackerCategory(with category: TrackerCategory) {
+    func createTrackerCategory(with category: TrackerCategory) {
         guard let categoryEntityDescription = NSEntityDescription.entity(forEntityName: "TrackerCategoryCoreData", in: context) else {
             print("Failed to make category entity description")
             return
@@ -118,8 +127,59 @@ final class TrackerCategoryStore: NSObject {
         let categoryCoreData = TrackerCategoryCoreData(entity: categoryEntityDescription, insertInto: context)
         categoryCoreData.title = category.title
         categoryCoreData.trackers = []
-        appDelegate.saveContext()
+        do {
+                try context.save()
+                try fetchedResultsController.performFetch()
+                
+                NotificationCenter.default.post(name: NSNotification.Name("CategoriesDidChange"), object: nil)
+                print("Category saved and reloaded successfully: \(category.title)")
+            } catch {
+                print("Failed to save or reload category: \(error)")
+            }
+    }
+    
+    // MARK: - Private Methods
+    
+    private func saveContext() {
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                print("Error saving context: \(error)")
+            }
+        }
+    }
+    
+    private func convertEntityToCategory(_ trackerCategoryCoreData: TrackerCategoryCoreData) -> TrackerCategory? {
+        guard let title = trackerCategoryCoreData.title,
+              let trackerCoreData = trackerCategoryCoreData.trackers?.allObjects as? [TrackerCoreData] else {
+            print("Failed to get title from CoreData entity")
+            return nil
+        }
+        
+        let trackers = trackerCoreData.compactMap { trackerCoreData in
+            if let id = trackerCoreData.id,
+                  let title = trackerCoreData.title,
+                  let color = trackerCoreData.color,
+                  let emoji = trackerCoreData.emoji,
+                  let schedule = trackerCoreData.schedule
+            {
+                return Tracker(id: id, title: title, color: color, emoji: emoji, schedule: WeekDay.scheduleFromString(schedule))
+            } else {
+                return nil
+            }
+        }
+        return TrackerCategory(title: title, trackers: trackers)
     }
 }
+
+extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+           NotificationCenter.default.post(name: NSNotification.Name("CategoriesDidChange"), object: nil)
+       }
+    }
+
+
+
 
 

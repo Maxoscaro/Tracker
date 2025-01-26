@@ -10,27 +10,31 @@ import UIKit
 final class CreateTrackerViewController: UIViewController {
     
     // MARK: - Public Properties
-    
-    weak var trackersVC: TrackersViewController?
-    weak var delegate: TrackerTypeViewController?
-    var onTrackerCreated: ((Tracker, String) -> Void)?
-    
-    // MARK: - Private Properties
-    
-    private var selectedCategory: TrackerCategory?
-    private var selectedSchedule = Set<WeekDay>()
-    private var selectedEmojiIndex: IndexPath?
-    private var selectedColorIndex: IndexPath?
-    private var selectedColor: UIColor?
-    private var selectedEmoji: String?
-    private var emojiDelegate = EmojiCollectionViewDelegate()
-    private var colorDelegate = ColorCollectionViewDelegate()
-    
-    private let trackerType: TrackerType
-    private let scheduleScreenVC = ScheduleScreenViewController()
-    private let categoryVC = ChooseCategoryViewController()
-    
-    
+      
+      weak var trackersVC: TrackersViewController?
+      weak var delegate: TrackerTypeViewController?
+      var onTrackerCreated: ((Tracker, String) -> Void)?
+      
+      // MARK: - Private Properties
+      
+      private let trackerType: TrackerType
+      private let scheduleScreenVC = ScheduleScreenViewController()
+      private let categoryVC = ChooseCategoryViewController(viewModel: ChooseCategoryViewModel())
+      
+      // MARK: - Delegates
+      
+      private var emojiDelegate = EmojiCollectionViewDelegate()
+      private var colorDelegate = ColorCollectionViewDelegate()
+      
+      // MARK: - Selection Properties
+      
+      private var selectedCategory: TrackerCategory?
+      private var selectedSchedule = Set<WeekDay>()
+      private var selectedEmojiIndex: IndexPath?
+      private var selectedColorIndex: IndexPath?
+      private var selectedColor: UIColor?
+      private var selectedEmoji: String?
+      
     // MARK: - UI Elements
     
     private lazy var contentView: UIView = {
@@ -214,6 +218,21 @@ final class CreateTrackerViewController: UIViewController {
         return abbreviationsArray.joined(separator: ", ")
     }
     
+    private func presentCategoryVC() {
+        let categoryVC = ChooseCategoryViewController(viewModel: ChooseCategoryViewModel(), currentCategory: selectedCategory)
+        categoryVC.delegate = self
+        categoryVC.onDone = { [weak self] category in
+            guard let self = self else { return }
+            print("Category selected via onDone: \(category.title)")
+            self.selectedCategory = category
+            self.tableView.reloadData()
+        }
+        
+        print("Presenting category selection view controller")
+        categoryVC.modalPresentationStyle = .pageSheet
+        present(categoryVC, animated: true)
+    }
+    
     // MARK: - Actions
     
     @objc private func textFieldDidChange() {
@@ -365,6 +384,7 @@ extension CreateTrackerViewController: UITableViewDelegate, UITableViewDataSourc
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
         configureCell(cell, at: indexPath)
         return cell
+
     }
     
     private func configureCell(_ cell: UITableViewCell, at indexPath: IndexPath) {
@@ -383,8 +403,9 @@ extension CreateTrackerViewController: UITableViewDelegate, UITableViewDataSourc
             if trackerType == .notRegularEvent {
                 cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
             }
+            
             cell.textLabel?.text = "Категория"
-            cell.detailTextLabel?.text = selectedCategory?.title ?? "Важное"
+            cell.detailTextLabel?.text = selectedCategory?.title
         }
     }
     
@@ -409,8 +430,7 @@ extension CreateTrackerViewController: UITableViewDelegate, UITableViewDataSourc
             scheduleScreenVC.modalPresentationStyle = .pageSheet
             present(scheduleScreenVC, animated: true)
         } else {
-            categoryVC.modalPresentationStyle = .pageSheet
-            present(categoryVC, animated: true)
+         presentCategoryVC()
         }
     }
 }

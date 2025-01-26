@@ -66,13 +66,13 @@ final class ScheduleScreenViewController: UIViewController {
     }
     
     // MARK: - Public Methods
-
+    
     func resetSchedule() {
         selectedWeekDays.removeAll()
         switchStatus = [Bool](repeating: false, count: 7)
         tableView.reloadData()
     }
-
+    
     // MARK: - Private Methods
     
     private func setupAppearance() {
@@ -150,19 +150,19 @@ extension ScheduleScreenViewController: UITableViewDelegate, UITableViewDataSour
         cell.accessoryView = switchView
         
         if indexPath.row == weekDays.count - 1 {
-                    cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-                }
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        }
         
         if indexPath.row == 0 {
-                    cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-                    cell.layer.cornerRadius = 16
-                    cell.clipsToBounds = true
-                } else if indexPath.row == weekDays.count - 1 {
-                    cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-                    cell.layer.cornerRadius = 16
-                    cell.clipsToBounds = true
-                } else {
-                    cell.layer.cornerRadius = 0 
-                }
+            cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            cell.layer.cornerRadius = 16
+            cell.clipsToBounds = true
+        } else if indexPath.row == weekDays.count - 1 {
+            cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            cell.layer.cornerRadius = 16
+            cell.clipsToBounds = true
+        } else {
+            cell.layer.cornerRadius = 0 
+        }
     }
 }
