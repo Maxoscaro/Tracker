@@ -11,7 +11,7 @@ import YandexMobileMetrica
 struct AnalyticsEvent {
     let eventType: AnalyticsEventType
     let screen: String
-    let item: AanaliticsClickEventType?
+    let item: AnalyticsClickEventType?
 }
 
 enum AnalyticsEventType: String {
@@ -20,7 +20,7 @@ enum AnalyticsEventType: String {
     case click
 }
 
-enum AanaliticsClickEventType: String {
+enum AnalyticsClickEventType: String {
     case add_track
     case track
     case filter

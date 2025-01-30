@@ -12,7 +12,36 @@ import YandexMobileMetrica
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
+    let fileManager = FileManager.default
+    
+    func deleteCoreDataStore() {
+        if let storeURL = self.persistentContainer.persistentStoreDescriptions.first?.url {
+            do {
+                try fileManager.removeItem(at: storeURL)
+                print("Database deleted successfully.")
+            } catch {
+                print("Failed to delete database: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func resetPersistentStore() {
+        let persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator
+        for store in persistentStoreCoordinator.persistentStores {
+            guard let storeURL = store.url else {
+                print("Store URL is nil, skipping this store.")
+                continue
+            }
+            do {
+                try persistentStoreCoordinator.remove(store)
+                try fileManager.removeItem(at: storeURL)
+                try persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: nil)
+            } catch {
+                print("Failed to reset persistent store: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         guard let configuration = YMMYandexMetricaConfiguration(apiKey: "84e36de0-9bf9-4082-a43b-e35cd4cd3293") else {
             return true
@@ -43,6 +72,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             screen: "Main",
             item: nil
         )
+        print("Close TrackerApp tapped")
         analyticsService.sendEvent(analyticsEvent)
     }
 
@@ -51,6 +81,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     lazy var persistentContainer: NSPersistentContainer = {
       
         let container = NSPersistentContainer(name: "TrackerApp")
+        let description = container.persistentStoreDescriptions.first
+        description?.shouldMigrateStoreAutomatically = true
+        description?.shouldInferMappingModelAutomatically = true
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")

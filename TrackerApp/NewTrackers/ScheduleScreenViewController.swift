@@ -162,7 +162,7 @@ extension ScheduleScreenViewController: UITableViewDelegate, UITableViewDataSour
             cell.layer.cornerRadius = 16
             cell.clipsToBounds = true
         } else {
-            cell.layer.cornerRadius = 0 
+            cell.layer.cornerRadius = 0
         }
     }
 }

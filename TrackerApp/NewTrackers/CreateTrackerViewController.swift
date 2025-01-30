@@ -10,31 +10,35 @@ import UIKit
 final class CreateTrackerViewController: UIViewController {
     
     // MARK: - Public Properties
-      
-      weak var trackersVC: TrackersViewController?
-      weak var delegate: TrackerTypeViewController?
-      var onTrackerCreated: ((Tracker, String) -> Void)?
-      
-      // MARK: - Private Properties
-      
-      private let trackerType: TrackerType
-      private let scheduleScreenVC = ScheduleScreenViewController()
-      private let categoryVC = ChooseCategoryViewController(viewModel: ChooseCategoryViewModel())
-      
-      // MARK: - Delegates
-      
-      private var emojiDelegate = EmojiCollectionViewDelegate()
-      private var colorDelegate = ColorCollectionViewDelegate()
-      
-      // MARK: - Selection Properties
-      
-      private var selectedCategory: TrackerCategory?
-      private var selectedSchedule = Set<WeekDay>()
-      private var selectedEmojiIndex: IndexPath?
-      private var selectedColorIndex: IndexPath?
-      private var selectedColor: UIColor?
-      private var selectedEmoji: String?
-      
+    
+    weak var trackersVC: TrackersViewController?
+    weak var trackerStore: TrackerStore?
+    weak var categoryStore: TrackerCategoryStore?
+    weak var delegate: TrackerTypeViewController?
+    var onTrackerCreated: ((Tracker, String) -> Void)?
+    
+    // MARK: - Private Properties
+    private let isRegularEvent: Bool
+    private let isEditingTracker: Bool
+    private var editableTracker: Tracker
+    private let trackerType: TrackerType
+    private let scheduleScreenVC = ScheduleScreenViewController()
+    private let categoryVC = ChooseCategoryViewController(viewModel: ChooseCategoryViewModel())
+    
+    // MARK: - Delegates
+    
+    private var emojiDelegate = EmojiCollectionViewDelegate()
+    private var colorDelegate = ColorCollectionViewDelegate()
+    
+    // MARK: - Selection Properties
+    
+    private var selectedCategory: TrackerCategory?
+    private var selectedSchedule = Set<WeekDay>()
+    private var selectedEmojiIndex: IndexPath?
+    private var selectedColorIndex: IndexPath?
+    private var selectedColor: UIColor?
+    private var selectedEmoji: String?
+    
     // MARK: - UI Elements
     
     private lazy var contentView: UIView = {
@@ -94,7 +98,7 @@ final class CreateTrackerViewController: UIViewController {
     
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle(LocalizedStrings.NewTracker.createButton, for: .normal)
+        button.setTitle(isEditingTracker ? "Save" : LocalizedStrings.NewTracker.createButton , for: .normal)
         button.setTitleColor(UIColor(named: "WhiteYP"), for: .normal)
         button.setTitleColor(.white, for: .disabled)
         button.backgroundColor = UIColor(named: "GrayYP")
@@ -153,12 +157,39 @@ final class CreateTrackerViewController: UIViewController {
         return collectionView
     }()
     
+    private lazy var durationCounterLabel: UILabel = {
+        let label = UILabel()
+        if isEditingTracker {
+            let font = UIFont(name: "SFProText-Bold", size: 32)
+            let count = trackerStore?.fetchTrackerEntity(editableTracker.id)?.record?.count
+            label.text = String.localizedStringWithFormat(
+                NSLocalizedString("daysCount", comment: "Количество дней"), count ?? 0)
+            label.textColor = .black
+            label.font = font
+        }
+        label.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(label)
+        return label
+    }()
+    
     // MARK: - Lifecycle
+    
+    init(type: TrackerType, isRegularEvent: Bool, isEditingTracker: Bool, editableTracker: Tracker? = nil) {
+        self.trackerType = type
+        self.isRegularEvent = isRegularEvent
+        self.isEditingTracker = isEditingTracker
+        self.editableTracker = editableTracker ?? Tracker.defaultTracker
+        super.init(nibName: nil, bundle: nil)
+    }
     
     init(type: TrackerType) {
         self.trackerType = type
+        self.isRegularEvent = false
+        self.isEditingTracker = false
+        self.editableTracker = Tracker.defaultTracker
         super.init(nibName: nil, bundle: nil)
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -166,7 +197,11 @@ final class CreateTrackerViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        resetForm()
+        if !isEditingTracker {
+            resetForm()
+        } else {
+            populateFieldsWithTrackerData(editableTracker)
+        }
     }
     
     override func viewDidLoad() {
@@ -181,16 +216,48 @@ final class CreateTrackerViewController: UIViewController {
         view.addTapGestureToHideKeyboard()
         categoryVC.delegate = self
         scheduleScreenVC.delegate = self
+        
         setupUI()
         setupConstraints()
         configureForTrackerType()
+        updateCreateButtonState()
+        
+    }
+    
+    private func populateFieldsWithTrackerData(_ tracker: Tracker) {
+        self.newTrackerName.text = tracker.title
+        self.selectedEmoji = tracker.emoji
+        if let emojiIndex = getEmojies().firstIndex(of: tracker.emoji) {
+            self.selectedEmojiIndex = IndexPath(item: emojiIndex, section: 0)
+            emojiCollectionView.selectItem(at: selectedEmojiIndex, animated: false, scrollPosition: .top)
+        }
+        
+        if let color = UIColor(hexString: tracker.color) {
+            self.selectedColor = color
+            if let colorIndex = getColors().firstIndex(where: { $0.hexString == tracker.color }) {
+                self.selectedColorIndex = IndexPath(item: colorIndex, section: 0)
+                colorCollectionView.selectItem(at: selectedColorIndex, animated: false, scrollPosition: .top)
+            }
+        }
+        
+        self.selectedSchedule = Set(tracker.schedule)
+        updateSelectedWeekdays(selectedSchedule)
+        
+        if let trackerEntity = trackerStore?.fetchTrackerEntity(tracker.id),
+           let categoryTitle = trackerEntity.category?.title {
+            let trackerCategory = TrackerCategory(title: categoryTitle, trackers: [])
+            self.selectedCategory = trackerCategory
+        }
+        tableView.reloadData()
+        emojiCollectionView.reloadData()
+        colorCollectionView.reloadData()
         updateCreateButtonState()
     }
     
     private func configureForTrackerType() {
         switch trackerType {
         case .habit:
-            screenTitle.text = LocalizedStrings.NewTracker.habitTitle
+            screenTitle.text = isEditingTracker ? LocalizedStrings.NewTracker.editTitle : LocalizedStrings.NewTracker.habitTitle
         case .notRegularEvent:
             screenTitle.text = LocalizedStrings.NewTracker.notRegularEvent
         }
@@ -205,38 +272,38 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     private func convertWeekdaysToString(_ selectedWeekdays: Set<WeekDay>) -> String {
-                let currentLocale = Locale.current
-                let orderedWeekDays: [WeekDay] = {
-        
-                    if currentLocale.identifier.hasPrefix("ru") {
-                        return [
-                            .monday,
-                            .tuesday,
-                            .wednesday,
-                            .thursday,
-                            .friday,
-                            .saturday,
-                            .sunday
-                        ]
-                    } else {
-        
-                        return [
-                            .sunday,
-                            .monday,
-                            .tuesday,
-                            .wednesday,
-                            .thursday,
-                            .friday,
-                            .saturday
-                        ]
-                    }
-                }()
-        
-                let orderedSelectedDays = orderedWeekDays.filter { selectedWeekdays.contains($0) }
-                let shortNames = orderedSelectedDays.map { $0.shortName }
-        
-                return shortNames.joined(separator: ", ")
+        let currentLocale = Locale.current
+        let orderedWeekDays: [WeekDay] = {
+            
+            if currentLocale.identifier.hasPrefix("ru") {
+                return [
+                    .monday,
+                    .tuesday,
+                    .wednesday,
+                    .thursday,
+                    .friday,
+                    .saturday,
+                    .sunday
+                ]
+            } else {
+                
+                return [
+                    .sunday,
+                    .monday,
+                    .tuesday,
+                    .wednesday,
+                    .thursday,
+                    .friday,
+                    .saturday
+                ]
             }
+        }()
+        
+        let orderedSelectedDays = orderedWeekDays.filter { selectedWeekdays.contains($0) }
+        let shortNames = orderedSelectedDays.map { $0.shortName }
+        
+        return shortNames.joined(separator: ", ")
+    }
     
     private func presentCategoryVC() {
         let categoryVC = ChooseCategoryViewController(viewModel: ChooseCategoryViewModel(), currentCategory: selectedCategory)
@@ -265,10 +332,30 @@ final class CreateTrackerViewController: UIViewController {
         let colorSelected = selectedColor?.hexString ?? "000000"
         let emojiSelected = selectedEmoji ?? "🤔"
         
-        let newTracker = Tracker(id: UUID(), title: trackerName, color: colorSelected , emoji: emojiSelected, schedule: selectedSchedule)
-        
-        onTrackerCreated?(newTracker, categoryTitle)
-        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+        if isEditingTracker {
+            let updatedTracker = Tracker(
+                id: editableTracker.id,
+                title: trackerName,
+                color: colorSelected,
+                emoji: emojiSelected,
+                schedule: selectedSchedule,
+                isPinned: editableTracker.isPinned
+            )
+            
+            trackerStore?.updateTracker(for: updatedTracker)
+            dismiss(animated: true)
+        } else {
+            let newTracker = Tracker(
+                id: UUID(),
+                title: trackerName,
+                color: colorSelected,
+                emoji: emojiSelected,
+                schedule: selectedSchedule
+            )
+            
+            onTrackerCreated?(newTracker, categoryTitle)
+            self.view.window?.rootViewController?.dismiss(animated: true)
+        }
     }
     
     @objc private func cancelButtonTapped(_ sender: UIButton) {
@@ -355,7 +442,10 @@ extension CreateTrackerViewController: UIViewConfigurableProtocol {
             screenTitle.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 22),
             screenTitle.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             
-            newTrackerName.topAnchor.constraint(equalTo: screenTitle.bottomAnchor, constant: 38),
+            durationCounterLabel.topAnchor.constraint(equalTo: screenTitle.bottomAnchor, constant: 38),
+            durationCounterLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            
+            newTrackerName.topAnchor.constraint(equalTo: durationCounterLabel.bottomAnchor, constant: 40),
             newTrackerName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             newTrackerName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             newTrackerName.heightAnchor.constraint(equalToConstant: 75),
@@ -404,7 +494,6 @@ extension CreateTrackerViewController: UITableViewDelegate, UITableViewDataSourc
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
         configureCell(cell, at: indexPath)
         return cell
-
     }
     
     private func configureCell(_ cell: UITableViewCell, at indexPath: IndexPath) {
@@ -450,7 +539,7 @@ extension CreateTrackerViewController: UITableViewDelegate, UITableViewDataSourc
             scheduleScreenVC.modalPresentationStyle = .pageSheet
             present(scheduleScreenVC, animated: true)
         } else {
-         presentCategoryVC()
+            presentCategoryVC()
         }
     }
 }

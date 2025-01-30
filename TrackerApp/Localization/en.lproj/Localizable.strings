@@ -30,6 +30,7 @@
 
 //MARK: - New Tracker View Controller
 "new_tracker.event_type.habit" = "New Habit";
+"new_tracker.edit.title" = "Edit habit";
 "new_tracker.event_type.one_off" = "Irregular Event";
 "new_tracker.placeholder.name" = "Enter tracker name";
 "new_tracker.button.cancel" = "Cancel";
@@ -47,6 +48,13 @@
 "new_category.title" = "New Category";
 "new_category.placeholder" = "Enter category name";
 "new_category.button.done" = "Done";
+
+//MARK: - FilteredTrackersScreen
+
+"FilterTrackersScreen_AllTrackers" = "All Trackers";
+"FilterTrackersScreen_TodayTrackers" = "Today's Trackers";
+"FilterTrackersScreen_CompletedTrackers" = "Completed";
+"FilterTrackersScreen_UncompletedTrackers" = "Uncompleted";
 
 //MARK: - WeekDays
 "monday" = "Monday";
@@ -68,3 +76,11 @@
 //MARK: - TabBar
 "tabBar.trackers" = "Trackers";
 "tabBar.statistics" = "Statistics";
+
+//MARK: - StatisticsVC
+"statistics_Title" = "Statistics";
+"statistics_NoDataText" = "Nothing to analyze yet";
+"statistics_TrackersCount" = "Average";
+"statistics_TrackersCompleted" = "Trackers Complete";
+"statisticsScreen_best_period" = "Best Period";
+"statisticsScreen_perfect_days" = "Perfect Days";

@@ -19,6 +19,11 @@
 "trackers.pinned" = "Закрепленные";
 "trackers.nothingFound" = "Ничего не найдено";
 
+//MARK: - FilteredTrackersScreen
+"FilterTrackersScreen_AllTrackers" = "Все трекеры";
+"FilterTrackersScreen_TodayTrackers" = "Трекеры на сегодня";
+"FilterTrackersScreen_CompletedTrackers" = "Завершенные";
+"FilterTrackersScreen_UncompletedTrackers" = "Не завершенные";
 
 //MARK: - Schedule View Controller
 "schedule.title" = "Расписание";
@@ -31,6 +36,7 @@
 
 //MARK: - New Tracker View Controller
 "new_tracker.event_type.habit" = "Новая привычка";
+"new_tracker.edit.title" = "Редактирование привычки";
 "new_tracker.event_type.one_off" = "Нерегулярное событие";
 "new_tracker.placeholder.name" = "Введите название трекера";
 "new_tracker.button.cancel" = "Отменить";
@@ -69,4 +75,12 @@
 //MARK: - TabBar
 "tabBar.trackers" = "Трекеры";
 "tabBar.statistics" = "Статистика";
+
+//MARK: - StatisticsVC
+"statistics_Title" = "Статистика";
+"statistics_NoDataText" = "Анализировать пока нечего";
+"statistics_TrackersCount" = "Среднее значение";
+"statistics_TrackersCompleted" = "Трекеров завершено";
+"statisticsScreen_best_period" = "Лучший период";
+"statisticsScreen_perfect_days" = "Идеальные дни";
 

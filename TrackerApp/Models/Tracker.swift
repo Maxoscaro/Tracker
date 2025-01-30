@@ -13,13 +13,21 @@ struct Tracker: Identifiable, Equatable, Codable {
     let color: String
     let emoji: String
     let schedule: Set<WeekDay>
+    let isPinned: Bool
     
-    init(id: UUID, title: String, color: String, emoji: String, schedule: Set<WeekDay>) {
+    init(id: UUID = UUID(), title: String, color: String, emoji: String, schedule: Set<WeekDay>, isPinned: Bool? = nil) {
         self.id = id
         self.title = title
         self.color = color
         self.emoji = emoji
         self.schedule = schedule
+        self.isPinned = isPinned ?? false
     }
+
+static let defaultTracker: Tracker = Tracker(
+    title: "Default Title",
+    color: "Default Color",
+    emoji: "😊",
+    schedule: Set<WeekDay>() )
 }
 

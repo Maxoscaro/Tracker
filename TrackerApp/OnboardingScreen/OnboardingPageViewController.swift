@@ -10,7 +10,7 @@ import UIKit
 final class OnboardingViewPageController: UIPageViewController {
     
     // MARK: - Private Properties
-
+    
     private lazy var pages: [UIViewController] = {
         let firstScreen = OnboardingScreenViewController(
             backGroundImageString: "OnboardingBackground1",

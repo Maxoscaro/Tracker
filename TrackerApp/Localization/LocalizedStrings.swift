@@ -38,6 +38,7 @@ enum LocalizedStrings {
     
     enum NewTracker {
         static let habitTitle = NSLocalizedString("new_tracker.event_type.habit", comment: "Title for a new habit tracker")
+        static let editTitle = NSLocalizedString("new_tracker.edit.title", comment: "Edit Title")
         static let notRegularEvent = NSLocalizedString("new_tracker.event_type.one_off", comment: "Title for an irregular event tracker")
         static let placeholderName = NSLocalizedString("new_tracker.placeholder.name", comment: "Placeholder for tracker name input field")
         static let cancelButton = NSLocalizedString("new_tracker.button.cancel", comment: "Cancel button text")
@@ -71,5 +72,18 @@ enum LocalizedStrings {
         static let shortFriday = NSLocalizedString("weekdays.short.friday", comment: "Short form for Friday")
         static let shortSaturday = NSLocalizedString("weekdays.short.saturday", comment: "Short form for Saturday")
         static let shortSunday = NSLocalizedString("weekdays.short.sunday", comment: "Short form for Sunday")
+    }
+    enum Statistics {
+        static let title = NSLocalizedString(
+            "statistics_Title", comment: "Title for the StatisticViewController")
+        static let noDataText = NSLocalizedString(
+            "statistics_NoDataText", comment: "Text displayed when there is no data to analyze")
+        static let trackersCountAvarage = NSLocalizedString(
+            "statistics_TrackersCount", comment: "Label for total trackers count")
+        static let trackersCompleted = NSLocalizedString(
+            "statistics_TrackersCompleted", comment: "Label for completed trackers count")
+        
+        static let bestPeriod = NSLocalizedString("statisticsScreen_best_period", comment: "Лучший период")
+        static let perfectDays =  NSLocalizedString("statisticsScreen_perfect_days", comment: "Идеальные дни")
     }
 }

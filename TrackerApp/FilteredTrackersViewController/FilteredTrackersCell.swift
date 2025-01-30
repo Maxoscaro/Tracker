@@ -1,16 +1,15 @@
 //
-//  CategoryTableViewCell.swift
+//  FilteredTrackersCell.swift
 //  TrackerApp
 //
-//  Created by Maksim on 11.01.2025.
+//  Created by Maksim on 27.01.2025.
 //
 
 import UIKit
 
-final class CategoryTableViewCell: UITableViewCell {
+final class FilteredTrackersCell: UITableViewCell {
     
-    static let identifier = "CategoryTableViewCell"
-    private var currentCategory: TrackerCategory?
+    static let identifier = "FilterTableViewCell"
     
     // MARK: - UI Components
     
@@ -40,13 +39,6 @@ final class CategoryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        layer.cornerRadius = 0
-        layer.maskedCorners = []
-        separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-    }
-    
     // MARK: - UI Setup
     
     private func setupUI() {
@@ -70,10 +62,8 @@ final class CategoryTableViewCell: UITableViewCell {
     
     // MARK: - Configuration
     
-    func configure(with category: TrackerCategory, isSelected: Bool) {
-        titleLabel.text = category.title
+    func configure(with title: String, isSelected: Bool) {
+        titleLabel.text = title
         selectionCheckmark.isHidden = !isSelected
     }
 }
-
-

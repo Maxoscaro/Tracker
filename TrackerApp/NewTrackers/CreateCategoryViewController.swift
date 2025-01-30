@@ -7,16 +7,24 @@
 
 import UIKit
 
+enum CategoryMode {
+    case create
+    case edit
+}
+
 final class CreateCategoryViewController: UIViewController {
     
+    var mode: CategoryMode = .create
     weak var delegate: ChooseCategoryViewModel?
-    
     var viewModel: CreateCategoryViewModel
+    var editingCategory: TrackerCategory?
     
-    init(viewModel: CreateCategoryViewModel) {
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
-    }
+    init(viewModel: CreateCategoryViewModel, mode: CategoryMode = .create, editingCategory: TrackerCategory? = nil) {
+           self.viewModel = viewModel
+           self.mode = mode
+           self.editingCategory = editingCategory
+           super.init(nibName: nil, bundle: nil)
+       }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -72,6 +80,13 @@ final class CreateCategoryViewController: UIViewController {
         setupInitialState()
         bindViewModel()
         viewModel.updateButtonState()
+        
+        if mode == .edit {
+                   screenTitle.text = "Редактирование категории"
+                   doneButton.setTitle("Сохранить", for: .normal)
+                   categoryNameTextField.text = editingCategory?.title
+                   viewModel.categoryName = editingCategory?.title ?? ""
+               }
     }
     
     // MARK: - Private Methods
@@ -101,9 +116,15 @@ final class CreateCategoryViewController: UIViewController {
     }
     
     @objc private func creationButtonTapped(_ sender: UIButton) {
-        viewModel.createNewCategory()
-        delegate?.loadCategories()
-        dismiss(animated: true, completion: nil)
+        if mode == .edit {
+              guard let oldTitle = editingCategory?.title else { return }
+              viewModel.editCategory(oldTitle: oldTitle, newTitle: categoryNameTextField.text ?? "")
+          } else {
+              viewModel.createNewCategory()
+          }
+          delegate?.loadCategories()
+          NotificationCenter.default.post(name: NSNotification.Name("CategoriesDidChange"), object: nil)
+          dismiss(animated: true)
     }
 }
 

@@ -19,22 +19,22 @@ final class TrackerCategoryStore: NSObject {
     }
     
     var chooseCategoryVC: ChooseCategoryViewController?
-    private var context: NSManagedObjectContext {
+     var context: NSManagedObjectContext {
         appDelegate.persistentContainer.viewContext
     }
     
     var categories: [TrackerCategory] {
         guard let fetchedObjects = fetchedResultsController.fetchedObjects else {
-                print("No fetched objects found")
-                return []
-            }
-            let converted = fetchedObjects.compactMap { entity in
-                let category = convertEntityToCategory(entity)
-                print("Converting entity with title: \(entity.title ?? "nil")")
-                return category
-            }
-            print("Converted \(converted.count) categories")
-            return converted
+            print("No fetched objects found")
+            return []
+        }
+        let converted = fetchedObjects.compactMap { entity in
+            let category = convertEntityToCategory(entity)
+            print("Converting entity with title: \(entity.title ?? "nil")")
+            return category
+        }
+        print("Converted \(converted.count) categories")
+        return converted
     }
     
     private var appDelegate: AppDelegate {
@@ -94,7 +94,12 @@ final class TrackerCategoryStore: NSObject {
             print("Error deleting all categories: \(error)")
         }
     }
-
+    
+    func deleteCategory(_ category: TrackerCategoryCoreData) {
+           context.delete(category)
+           saveContext()
+       }
+    
     func updateCategory(at indexPath: IndexPath, with newTitle: String) throws {
         let category = fetchedResultsController.object(at: indexPath)
         category.title = newTitle
@@ -128,14 +133,14 @@ final class TrackerCategoryStore: NSObject {
         categoryCoreData.title = category.title
         categoryCoreData.trackers = []
         do {
-                try context.save()
-                try fetchedResultsController.performFetch()
-                
-                NotificationCenter.default.post(name: NSNotification.Name("CategoriesDidChange"), object: nil)
-                print("Category saved and reloaded successfully: \(category.title)")
-            } catch {
-                print("Failed to save or reload category: \(error)")
-            }
+            try context.save()
+            try fetchedResultsController.performFetch()
+            
+            NotificationCenter.default.post(name: NSNotification.Name("CategoriesDidChange"), object: nil)
+            print("Category saved and reloaded successfully: \(category.title)")
+        } catch {
+            print("Failed to save or reload category: \(error)")
+        }
     }
     
     // MARK: - Private Methods
@@ -159,10 +164,10 @@ final class TrackerCategoryStore: NSObject {
         
         let trackers = trackerCoreData.compactMap { trackerCoreData in
             if let id = trackerCoreData.id,
-                  let title = trackerCoreData.title,
-                  let color = trackerCoreData.color,
-                  let emoji = trackerCoreData.emoji,
-                  let schedule = trackerCoreData.schedule
+               let title = trackerCoreData.title,
+               let color = trackerCoreData.color,
+               let emoji = trackerCoreData.emoji,
+               let schedule = trackerCoreData.schedule
             {
                 return Tracker(id: id, title: title, color: color, emoji: emoji, schedule: WeekDay.scheduleFromString(schedule))
             } else {
@@ -175,9 +180,9 @@ final class TrackerCategoryStore: NSObject {
 
 extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-           NotificationCenter.default.post(name: NSNotification.Name("CategoriesDidChange"), object: nil)
-       }
+        NotificationCenter.default.post(name: NSNotification.Name("CategoriesDidChange"), object: nil)
     }
+}
 
 
 

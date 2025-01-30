@@ -14,7 +14,7 @@ final class TrackerCell: UICollectionViewCell {
     weak var trackersVC: TrackersViewController?
     private var tracker: Tracker?
     private var selectedDate: Date?
-    
+    weak var trackerRecordStore: TrackerRecordStore?
     private var isTrackerComplete = false
     private var durationCountInt = 0
     private var cellColor: UIColor = .systemGreen
@@ -27,6 +27,15 @@ final class TrackerCell: UICollectionViewCell {
         view.layer.cornerRadius = 16
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+    
+    private lazy var pinImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "pin.fill")
+        imageView.tintColor = .white
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.isHidden = true
+        return imageView
     }()
     
     private let emojiLabel: UILabel = {
@@ -86,21 +95,35 @@ final class TrackerCell: UICollectionViewCell {
         super.layoutSubviews()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        isUserInteractionEnabled = true
+    }
+    
     // MARK: - Public Methods
     
     func configure(with tracker: Tracker, on date: Date) {
         self.tracker = tracker
         selectedDate = date
-        
+        pinImageView.isHidden = !tracker.isPinned
         cardText.text = tracker.title
         emojiLabel.text = tracker.emoji
         cardView.backgroundColor = UIColor(hexString: tracker.color)
         cellColor = UIColor(hexString: tracker.color) ?? .green
-        self.isTrackerComplete = trackersVC?.isTrackerCompleted(tracker, on: date) ?? false
+        
+        isTrackerComplete = isTrackerCompleted(tracker, on: date)
+        durationCountInt = trackerRecordStore?.fetchTrackerRecords(for: tracker.id).count ?? 0
         
         updateUI(with: cellColor)
         countDaysLabel.text = String.localizedStringWithFormat(
             NSLocalizedString("daysCount", comment: "Количество дней"), durationCountInt)
+    }
+    func getTracker() -> Tracker? {
+        guard let tracker else { return nil }
+        return tracker
+    }
+    func getCellColorRectView() -> UIView {
+        return cardView
     }
     
     // MARK: - Private Methods
@@ -120,7 +143,9 @@ final class TrackerCell: UICollectionViewCell {
     private func increaseDurationLabel() {
         durationCountInt += 1
         countDaysLabel.text = String.localizedStringWithFormat(
-            NSLocalizedString("daysCount", comment: "Количество дней"), durationCountInt)
+            NSLocalizedString("daysCount", comment: "Количество дней"),
+            durationCountInt)
+        
         guard let tracker = self.tracker, let selectedDate = selectedDate else { return }
         trackersVC?.setTrackerComplete(for: tracker, on: selectedDate)
     }
@@ -128,34 +153,56 @@ final class TrackerCell: UICollectionViewCell {
     private func decreaseDurationLabel() {
         durationCountInt -= 1
         countDaysLabel.text = String.localizedStringWithFormat(
-            NSLocalizedString("daysCount", comment: "Количество дней"), durationCountInt)
+            NSLocalizedString("daysCount", comment: "Количество дней"),
+            durationCountInt)
+        
         guard let tracker = self.tracker, let selectedDate = selectedDate else { return }
         trackersVC?.setTrackerIncomplete(for: tracker, on: selectedDate)
+    }
+    
+    private func numberOfRecords(for tracker: Tracker) -> Int {
+        guard let records = trackerRecordStore?.fetchTrackerRecords(for: tracker.id) else { return 0 }
+        return records.count
+        
     }
     
     // MARK: - Actions
     
     @objc private func plusButtonTapped() {
-        isTrackerComplete = !isTrackerComplete
-        guard let selectedDate = trackersVC?.getDateFromUIDatePicker() else { return }
-        let currentDate = Date()
+        self.isTrackerComplete = !isTrackerComplete
+        guard let trackersVC, let selectedDate = trackersVC.getDateFromUIDatePicker() else { return }
         
+        let currentDate = Date()
         if selectedDate > currentDate {
-            return
+            print("Выбрана дата позднее текущей")
         } else {
-            if let tracker = self.tracker {
-                updateUI(with: cellColor)
-            }
-            
-            if isTrackerComplete {
+            if isTrackerComplete{
                 increaseDurationLabel()
             } else {
                 decreaseDurationLabel()
             }
+            updateUI(with: cellColor)
         }
+        
+        let analyticsEvent = AnalyticsEvent(
+            eventType: .click,
+            screen: "Main",
+            item: .track
+        )
+        trackersVC.analyticsService.sendEvent(analyticsEvent)
+        print("Complete Tracker button tapped")
+    }
+    
+    private func isTrackerCompleted(_ tracker: Tracker, on date: Date) -> Bool {
+        guard let records = trackerRecordStore?.fetchTrackerRecords(byId: tracker.id, on: date) else {
+            print("No records found")
+            return false
+        }
+        let isComplete = !records.isEmpty
+        print("Found records: \(records.count), isComplete: \(isComplete)")
+        return isComplete
     }
 }
-
 // MARK: - UIViewConfigurableProtocol
 
 extension TrackerCell: UIViewConfigurableProtocol {
@@ -166,6 +213,7 @@ extension TrackerCell: UIViewConfigurableProtocol {
         
         cardView.addSubview(emojiLabel)
         cardView.addSubview(cardText)
+        cardView.addSubview(pinImageView)
     }
     
     func setupConstraints() {
@@ -174,7 +222,10 @@ extension TrackerCell: UIViewConfigurableProtocol {
             cardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             cardView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             cardView.heightAnchor.constraint(equalToConstant: 90),
-            
+            pinImageView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 12),
+            pinImageView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -12),
+            pinImageView.widthAnchor.constraint(equalToConstant: 14),
+            pinImageView.heightAnchor.constraint(equalToConstant: 14),
             emojiLabel.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 12),
             emojiLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 12),
             emojiLabel.widthAnchor.constraint(equalToConstant: 24),
