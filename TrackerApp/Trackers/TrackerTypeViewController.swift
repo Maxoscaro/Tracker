@@ -48,7 +48,7 @@ final class TrackerTypeViewController: UIViewController {
     
     private func setupScreenTitle() {
         let label = UILabel()
-        label.text = "Создание трекера"
+        label.text = LocalizedStrings.TrackerCreation.title
         label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = UIColor(named: "BlackYP")
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -71,13 +71,13 @@ final class TrackerTypeViewController: UIViewController {
     }
     
     private func setupHabitButton() {
-        let habitButton = setupButton(with: "Привычка")
+        let habitButton = setupButton(with: LocalizedStrings.TrackerCreation.habitButton)
         habitButton.addTarget(self, action: #selector(habitButtonTapped), for: .touchUpInside)
         self.habitButton = habitButton
     }
     
     private func setupEventButton() {
-        let eventButton = setupButton(with: "Нерегулярное событие")
+        let eventButton = setupButton(with: LocalizedStrings.TrackerCreation.irregularEventButton)
         eventButton.addTarget(self, action: #selector(eventButtonTapped), for: .touchUpInside)
         self.eventButton = eventButton
     }

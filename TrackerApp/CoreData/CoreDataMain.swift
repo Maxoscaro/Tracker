@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import UIKit
 
 final class CoreDataMain {
     
@@ -41,3 +42,4 @@ final class CoreDataMain {
         }
     }
 }
+

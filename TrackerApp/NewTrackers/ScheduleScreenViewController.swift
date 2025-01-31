@@ -23,7 +23,7 @@ final class ScheduleScreenViewController: UIViewController {
     
     private lazy var screenTitle: UILabel = {
         let title = UILabel()
-        title.text = "Расписание"
+        title.text = LocalizedStrings.Schedule.title
         title.textColor = UIColor(named: "BlackYP")
         title.font = .systemFont(ofSize: 16)
         title.translatesAutoresizingMaskIntoConstraints = false
@@ -47,7 +47,7 @@ final class ScheduleScreenViewController: UIViewController {
     
     private lazy var doneButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(LocalizedStrings.Schedule.buttonText, for: .normal)
         button.backgroundColor = UIColor(named: "BlackYP")
         button.layer.cornerRadius = 16
         button.setTitleColor(UIColor(named: "WhiteYP"), for: .normal)
@@ -139,7 +139,7 @@ extension ScheduleScreenViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     private func configureCell(_ cell: UITableViewCell, with weekDay: WeekDay, at indexPath: IndexPath) {
-        cell.textLabel?.text = weekDay.rawValue
+        cell.textLabel?.text = weekDay.localized
         cell.backgroundColor = UIColor(named: "Background")
         
         let switchView = UISwitch(frame: .zero)
@@ -162,7 +162,7 @@ extension ScheduleScreenViewController: UITableViewDelegate, UITableViewDataSour
             cell.layer.cornerRadius = 16
             cell.clipsToBounds = true
         } else {
-            cell.layer.cornerRadius = 0 
+            cell.layer.cornerRadius = 0
         }
     }
 }

@@ -9,8 +9,8 @@ import UIKit
 
 final class TabBarController: UITabBarController {
     
-    private let trackersTabBarTitle = "Трекеры"
-    private let statisticsTabBarTitle = "Статистика"
+    private let trackersTabBarTitle = LocalizedStrings.TabBar.categories
+    private let statisticsTabBarTitle = LocalizedStrings.TabBar.statistics
     private let tapBarHight: CGFloat = 90.0
     
     override func viewDidLoad() {
@@ -22,7 +22,7 @@ final class TabBarController: UITabBarController {
     
     private func setupViewControllers() {
         let trackerStore = TrackerStore.shared
-            let trackersViewController = TrackersViewController(trackerStore: trackerStore)
+        let trackersViewController = TrackersViewController(trackerStore: trackerStore)
         let statisticsViewController = StatisticsViewController()
         
         trackersViewController.tabBarItem = UITabBarItem(title: trackersTabBarTitle, image: UIImage(named: "PropertyTrackers"), tag: 0)

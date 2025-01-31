@@ -15,6 +15,9 @@ final class ChooseCategoryViewController: UIViewController {
     weak var delegate: CreateTrackerViewController?
     var viewModel: ChooseCategoryViewModel
     var onDone: ((TrackerCategory) -> Void)?
+    private var trackerCategoryStore = TrackerCategoryStore.shared
+    private var currentCategory: TrackerCategory?
+    
     
     // MARK: - Private Properties
     
@@ -30,7 +33,7 @@ final class ChooseCategoryViewController: UIViewController {
     
     private lazy var screenTitle: UILabel = {
         let title = UILabel()
-        title.text = "Категория"
+        title.text = LocalizedStrings.Categories.title
         title.textColor = UIColor(named: "BlackYP")
         title.font = .systemFont(ofSize: 16)
         title.translatesAutoresizingMaskIntoConstraints = false
@@ -48,6 +51,7 @@ final class ChooseCategoryViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.layer.cornerRadius = 16
+        tableView.separatorColor = UIColor(named: "BlackYP")
         tableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.identifier)
         tableView.isScrollEnabled = false
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -63,7 +67,7 @@ final class ChooseCategoryViewController: UIViewController {
     
     private lazy var emptyStateLabel: UILabel = {
         let label = UILabel()
-        label.text = "Привычки и события можно объединить по смыслу"
+        label.text = LocalizedStrings.Categories.placeholderText
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = UIColor(named: "BlackYP")
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -72,7 +76,7 @@ final class ChooseCategoryViewController: UIViewController {
     
     private lazy var addNewCategoryButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(LocalizedStrings.Categories.addButton, for: .normal)
         button.backgroundColor = UIColor(named: "BlackYP")
         button.layer.cornerRadius = 16
         button.setTitleColor(UIColor(named: "WhiteYP"), for: .normal)
@@ -143,6 +147,30 @@ final class ChooseCategoryViewController: UIViewController {
         }
     }
     
+    private func presentDeleteAlert(_ category: TrackerCategory) {
+        let alert = UIAlertController(
+            title: nil,
+            message: "Эта категория точно не нужна?",
+            preferredStyle: .actionSheet
+        )
+        
+        let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) {
+            [weak self] _ in
+            guard let self = self,
+                  let categoryCoreData = self.trackerCategoryStore.getCategoryBy(title: category.title)
+            else { return }
+            self.trackerCategoryStore.deleteCategory(categoryCoreData)
+        }
+        
+        let cancelAction = UIAlertAction(
+            title: "Отменить", style: .cancel, handler: nil)
+        
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
     private func updateUI(_ isCategoryListEmpty: Bool) {
         emptyStateView.isHidden = !isCategoryListEmpty
         tableView.isHidden = isCategoryListEmpty
@@ -150,6 +178,9 @@ final class ChooseCategoryViewController: UIViewController {
     
     @objc private func categoriesDidChange() {
         viewModel.loadCategories()
+          DispatchQueue.main.async { [weak self] in
+              self?.tableView.reloadData()
+          }
     }
     
     @objc private func addButtonTapped(_ sender: UIButton) {
@@ -215,19 +246,31 @@ extension ChooseCategoryViewController: UITableViewDelegate, UITableViewDataSour
             for: indexPath
         ) as! CategoryTableViewCell
         
-        cell.backgroundColor = UIColor(named: "Background")
-        cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
-        cell.textLabel?.textColor = UIColor(named: "BlackYP")
-        cell.detailTextLabel?.textColor = UIColor(named: "GrayYP")
-        cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17)
-        
-        let category = viewModel.categories[indexPath.row]
-        cell.configure(with: category, isSelected: category == selectedCategory)
-        
-        if indexPath.row == viewModel.categories.count - 1 {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-        }
+        configureCell(cell, at: indexPath)
         return cell
+    }
+    
+    private func configureCell(_ cell: CategoryTableViewCell, at indexPath: IndexPath) {
+        let category = viewModel.categories[indexPath.row]
+        
+        cell.backgroundColor = UIColor(named: "Background")
+        cell.configure(with: category, isSelected: category == selectedCategory)
+     
+        if indexPath.row == 0 {
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            cell.layer.masksToBounds = true
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        } else if indexPath.row == viewModel.categories.count - 1 {
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            cell.layer.masksToBounds = true
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        } else {
+            cell.layer.cornerRadius = 0
+            cell.layer.masksToBounds = true
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -242,4 +285,38 @@ extension ChooseCategoryViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
     }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let cell = cell as? CategoryTableViewCell else { return }
+        configureCell(cell, at: indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let category = viewModel.categories[indexPath.row]
+        
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let editAction = UIAction(
+                title: "Редактировать"
+            ) { [weak self] _ in
+                let createCategoryVC = CreateCategoryViewController(viewModel: CreateCategoryViewModel())
+                createCategoryVC.delegate = self?.viewModel
+                createCategoryVC.viewModel.trackersCategoryStore = self?.viewModel.trackersCategoryStore
+                createCategoryVC.viewModel.categoryName = category.title
+                createCategoryVC.mode = .edit
+                createCategoryVC.editingCategory = category
+                self?.present(createCategoryVC, animated: true)
+            }
+            
+            let deleteAction = UIAction(
+                title: "Удалить",
+                attributes: .destructive
+            ) { [weak self] _ in
+                self?.presentDeleteAlert(category)
+            }
+            
+            return UIMenu(title: "", children: [editAction, deleteAction])
+        }
+    }
 }
+
+

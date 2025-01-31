@@ -7,16 +7,24 @@
 
 import UIKit
 
+enum CategoryMode {
+    case create
+    case edit
+}
+
 final class CreateCategoryViewController: UIViewController {
     
+    var mode: CategoryMode = .create
     weak var delegate: ChooseCategoryViewModel?
-    
     var viewModel: CreateCategoryViewModel
+    var editingCategory: TrackerCategory?
     
-    init(viewModel: CreateCategoryViewModel) {
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
-    }
+    init(viewModel: CreateCategoryViewModel, mode: CategoryMode = .create, editingCategory: TrackerCategory? = nil) {
+           self.viewModel = viewModel
+           self.mode = mode
+           self.editingCategory = editingCategory
+           super.init(nibName: nil, bundle: nil)
+       }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -26,7 +34,7 @@ final class CreateCategoryViewController: UIViewController {
     
     private lazy var screenTitle: UILabel = {
         let title = UILabel()
-        title.text = "Новая категория"
+        title.text = LocalizedStrings.NewCategory.title
         title.textColor = UIColor(named: "BlackYP")
         title.font = .systemFont(ofSize: 16)
         title.translatesAutoresizingMaskIntoConstraints = false
@@ -35,7 +43,7 @@ final class CreateCategoryViewController: UIViewController {
     
     private lazy var categoryNameTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введите название категории"
+        textField.placeholder = LocalizedStrings.NewCategory.placeholder
         textField.font = UIFont.systemFont(ofSize: 16)
         textField.backgroundColor = UIColor(named: "Background")
         textField.borderStyle = .none
@@ -56,7 +64,7 @@ final class CreateCategoryViewController: UIViewController {
     
     private lazy var doneButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(LocalizedStrings.NewCategory.doneButton, for: .normal)
         button.backgroundColor = UIColor(named: "BlackYP")
         button.layer.cornerRadius = 16
         button.setTitleColor(UIColor(named: "WhiteYP"), for: .normal)
@@ -72,6 +80,13 @@ final class CreateCategoryViewController: UIViewController {
         setupInitialState()
         bindViewModel()
         viewModel.updateButtonState()
+        
+        if mode == .edit {
+                   screenTitle.text = "Редактирование категории"
+                   doneButton.setTitle("Сохранить", for: .normal)
+                   categoryNameTextField.text = editingCategory?.title
+                   viewModel.categoryName = editingCategory?.title ?? ""
+               }
     }
     
     // MARK: - Private Methods
@@ -101,9 +116,15 @@ final class CreateCategoryViewController: UIViewController {
     }
     
     @objc private func creationButtonTapped(_ sender: UIButton) {
-        viewModel.createNewCategory()
-        delegate?.loadCategories()
-        dismiss(animated: true, completion: nil)
+        if mode == .edit {
+              guard let oldTitle = editingCategory?.title else { return }
+              viewModel.editCategory(oldTitle: oldTitle, newTitle: categoryNameTextField.text ?? "")
+          } else {
+              viewModel.createNewCategory()
+          }
+          delegate?.loadCategories()
+          NotificationCenter.default.post(name: NSNotification.Name("CategoriesDidChange"), object: nil)
+          dismiss(animated: true)
     }
 }
 

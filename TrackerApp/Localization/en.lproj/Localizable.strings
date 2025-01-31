@@ -1,0 +1,86 @@
+/* 
+  Localizable.strings
+  TrackerApp
+
+  Created by Maksim on 22.01.2025.
+  
+*/
+
+// MARK: - Onboarding View Controllers
+"onboarding.first.title" = "Track only what you want";
+"onboarding.second.title" = "Even if it's not liters of water and yoga";
+"onboarding.button.text" = "Isn't this amazing technology!";
+
+// MARK: - Trackers View Controller
+"trackers.title" = "Trackers";
+"trackers.placeholder.text" = "What shall we track?";
+"trackers.searchPlaceHolder" = "Search";
+"trackers.filters" = "Filters";
+"trackers.pinned" = "Pinned";
+"trackers.nothingFound" = "Nothing found";
+
+// MARK: - Schedule View Controller
+"schedule.title" = "Schedule";
+"schedule.button.text" = "Done";
+
+//MARK: - Tracker Type Selector
+"tracker_creation.title" = "Create Tracker";
+"tracker_creation.button.habit" = "Habit";
+"tracker_creation.button.irregular_event" = "Irregular Event";
+
+//MARK: - New Tracker View Controller
+"new_tracker.event_type.habit" = "New Habit";
+"new_tracker.edit.title" = "Edit habit";
+"new_tracker.event_type.one_off" = "Irregular Event";
+"new_tracker.placeholder.name" = "Enter tracker name";
+"new_tracker.button.cancel" = "Cancel";
+"new_tracker.button.create" = "Create";
+"new_tracker.title.category" = "Category";
+"new_tracker.title.schedule" = "Schedule";
+"new_tracker.color.text" = "Color";
+
+//MARK: - Categories
+"categories.title" = "Category";
+"categories.button.add" = "Add Category";
+"categories.placeholder.text" = "You can group \nhabits and events by meaning";
+
+//MARK: - New Category View Controller
+"new_category.title" = "New Category";
+"new_category.placeholder" = "Enter category name";
+"new_category.button.done" = "Done";
+
+//MARK: - FilteredTrackersScreen
+
+"FilterTrackersScreen_AllTrackers" = "All Trackers";
+"FilterTrackersScreen_TodayTrackers" = "Today's Trackers";
+"FilterTrackersScreen_CompletedTrackers" = "Completed";
+"FilterTrackersScreen_UncompletedTrackers" = "Uncompleted";
+
+//MARK: - WeekDays
+"monday" = "Monday";
+"tuesday" = "Tuesday";
+"wednesday" = "Wednesday";
+"thursday" = "Thursday";
+"friday" = "Friday";
+"saturday" = "Saturday";
+"sunday" = "Sunday";
+
+"weekdays.short.monday" = "Mon";
+"weekdays.short.tuesday" = "Tue";
+"weekdays.short.wednesday" = "Wed";
+"weekdays.short.thursday" = "Thu";
+"weekdays.short.friday" = "Fri";
+"weekdays.short.saturday" = "Sat";
+"weekdays.short.sunday" = "Sun";
+
+//MARK: - TabBar
+"tabBar.trackers" = "Trackers";
+"tabBar.statistics" = "Statistics";
+
+//MARK: - StatisticsVC
+"statistics_Title" = "Statistics";
+"statistics_NoDataText" = "Nothing to analyze yet";
+"statistics_TrackersCount" = "Average";
+"statistics_TrackersCompleted" = "Trackers Complete";
+"statisticsScreen_best_period" = "Best Period";
+"statisticsScreen_perfect_days" = "Perfect Days";

@@ -13,38 +13,21 @@ struct Tracker: Identifiable, Equatable, Codable {
     let color: String
     let emoji: String
     let schedule: Set<WeekDay>
+    let isPinned: Bool
     
-    init(id: UUID, title: String, color: String, emoji: String, schedule: Set<WeekDay>) {
+    init(id: UUID = UUID(), title: String, color: String, emoji: String, schedule: Set<WeekDay>, isPinned: Bool? = nil) {
         self.id = id
         self.title = title
         self.color = color
         self.emoji = emoji
         self.schedule = schedule
+        self.isPinned = isPinned ?? false
     }
+
+static let defaultTracker: Tracker = Tracker(
+    title: "Default Title",
+    color: "Default Color",
+    emoji: "😊",
+    schedule: Set<WeekDay>() )
 }
 
-enum WeekDay: String, Codable, CaseIterable {
-    case monday = "Понедельник"
-    case tuesday = "Вторник"
-    case wednesday = "Среда"
-    case thursday = "Четверг"
-    case friday = "Пятница"
-    case saturday = "Суббота"
-    case sunday = "Воскресенье"
-    
-    static func fromDate(_ date: Date) -> WeekDay? {
-        let calendar = Calendar.current
-        let weekDayIndex = calendar.component(.weekday, from: date)
-        
-        let weekDays = [
-            WeekDay.sunday,
-            WeekDay.monday,
-            WeekDay.tuesday,
-            WeekDay.wednesday,
-            WeekDay.thursday,
-            WeekDay.friday,
-            WeekDay.saturday
-        ]
-        return weekDays[weekDayIndex - 1]
-    }
-}

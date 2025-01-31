@@ -1,0 +1,86 @@
+/* 
+  Localizable.strings
+  TrackerApp
+
+  Created by Maksim on 22.01.2025.
+  
+*/
+
+// MARK: - Onboarding View Controllers
+"onboarding.first.title" = "Отслеживайте только то, что хотите";
+"onboarding.second.title" = "Даже если это не литры воды и йога";
+"onboarding.button.text" = "Вот это технологии!";
+
+//MARK: - Trackers View Controller
+"trackers.title" = "Трекеры";
+"trackers.placeholder.text" = "Что будем отслеживать?";
+"trackers.searchPlaceHolder" = "Поиск";
+"trackers.filters" = "Фильтры";
+"trackers.pinned" = "Закрепленные";
+"trackers.nothingFound" = "Ничего не найдено";
+
+//MARK: - FilteredTrackersScreen
+"FilterTrackersScreen_AllTrackers" = "Все трекеры";
+"FilterTrackersScreen_TodayTrackers" = "Трекеры на сегодня";
+"FilterTrackersScreen_CompletedTrackers" = "Завершенные";
+"FilterTrackersScreen_UncompletedTrackers" = "Не завершенные";
+
+//MARK: - Schedule View Controller
+"schedule.title" = "Расписание";
+"schedule.button.text" = "Готово";
+
+//MARK: - Tracker Type Selector
+"tracker_creation.title" = "Создание трекера";
+"tracker_creation.button.habit" = "Привычка";
+"tracker_creation.button.irregular_event" = "Нерегулярное событие";
+
+//MARK: - New Tracker View Controller
+"new_tracker.event_type.habit" = "Новая привычка";
+"new_tracker.edit.title" = "Редактирование привычки";
+"new_tracker.event_type.one_off" = "Нерегулярное событие";
+"new_tracker.placeholder.name" = "Введите название трекера";
+"new_tracker.button.cancel" = "Отменить";
+"new_tracker.button.create" = "Создать";
+"new_tracker.title.category" = "Категория";
+"new_tracker.title.schedule" = "Расписание";
+"new_tracker.color.text" = "Цвет";
+
+//MARK: - Categories
+"categories.title" = "Категория";
+"categories.button.add" = "Добавить категорию";
+"categories.placeholder.text" = "Привычки и события можно \nобъединить по смыслу";
+
+//MARK: - New Category View Controller
+"new_category.title" = "Новая категория";
+"new_category.placeholder" = "Введите название категории";
+"new_category.button.done" = "Готово";
+
+//MARK: - WeekDays
+"monday" = "Понедельник";
+"tuesday" = "Вторник";
+"wednesday" = "Среда";
+"thursday" = "Четверг";
+"friday" = "Пятница";
+"saturday" = "Суббота";
+"sunday" = "Воскресенье";
+
+"weekdays.short.monday" = "Пн";
+"weekdays.short.tuesday" = "Вт";
+"weekdays.short.wednesday" = "Ср";
+"weekdays.short.thursday" = "Чт";
+"weekdays.short.friday" = "Пт";
+"weekdays.short.saturday" = "Сб";
+"weekdays.short.sunday" = "Вс";
+
+//MARK: - TabBar
+"tabBar.trackers" = "Трекеры";
+"tabBar.statistics" = "Статистика";
+
+//MARK: - StatisticsVC
+"statistics_Title" = "Статистика";
+"statistics_NoDataText" = "Анализировать пока нечего";
+"statistics_TrackersCount" = "Среднее значение";
+"statistics_TrackersCompleted" = "Трекеров завершено";
+"statisticsScreen_best_period" = "Лучший период";
+"statisticsScreen_perfect_days" = "Идеальные дни";
+

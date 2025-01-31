@@ -30,6 +30,11 @@ final class CreateCategoryViewModel {
         print("New category created: \(categoryName)")
     
                 }
+    func editCategory(oldTitle: String, newTitle: String) {
+         guard let categoryCoreData = trackersCategoryStore?.getCategoryBy(title: oldTitle) else { return }
+         categoryCoreData.title = newTitle
+         try? trackersCategoryStore?.context.save()
+     }
     
     func updateButtonState() {
         onCreationButtonStateUpdate?(isDoneButtonEnabled)

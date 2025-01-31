@@ -27,12 +27,11 @@ final class OnboardingScreenViewController: UIViewController {
         let label = UILabel()
         label.textColor = UIColor(named: "BlackYP")
         if let font = UIFont(name: "SFProText-Bold", size: 32) {
-                label.font = font
-            } else {
-                // Fallback на случай, если шрифт не найден
-                label.font = .systemFont(ofSize: 32, weight: .bold)
-                print("Failed to load SF Pro Display Bold font")
-            }
+            label.font = font
+        } else {
+            label.font = .systemFont(ofSize: 32, weight: .bold)
+            print("Failed to load SF Pro Display Bold font")
+        }
         label.numberOfLines = 0
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -66,7 +65,7 @@ extension OnboardingScreenViewController: UIViewConfigurableProtocol {
     func setupUI() {
         view.addSubview(backgroundImageView)
         view.addSubview(textLabel)
-    
+        
         if let imageName = backGroundImageString {
             backgroundImageView.image = UIImage(named: imageName)
         }
@@ -84,7 +83,7 @@ extension OnboardingScreenViewController: UIViewConfigurableProtocol {
             textLabel.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: 60),
             textLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             textLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
-
+            
         ])
     }
 }

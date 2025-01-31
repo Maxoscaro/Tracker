@@ -40,7 +40,7 @@ final class ColorCollectionViewDelegate: NSObject, UICollectionViewDataSource,
         guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "ColorHeader", for: indexPath) as? ColorHeader else {
             return ColorHeader()
         }
-        header.label.text = "Цвет"
+        header.label.text = LocalizedStrings.NewTracker.colorText
         return header
     }
     
