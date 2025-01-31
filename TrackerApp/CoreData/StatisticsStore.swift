@@ -19,46 +19,34 @@ final class StatisticsStore {
             return UserDefaults.standard.integer(forKey: "StatisticsScreen.perfectDaysCount")
         }
         set {
-            let currentStoredValue = UserDefaults.standard.integer(forKey: "StatisticsScreen.perfectDaysCount")
-            if newValue > currentStoredValue {
-                UserDefaults.standard.set(newValue, forKey: "StatisticsScreen.perfectDaysCount")
-            }
+            UserDefaults.standard.set(newValue, forKey: "StatisticsScreen.perfectDaysCount")
         }
     }
-
+    
     public var trackersCompleteCount: Int {
         get {
             return UserDefaults.standard.integer(forKey: "StatisticsScreen.trackersCompleteCount")
         }
         set {
-            let currentStoredValue = UserDefaults.standard.integer(forKey: "StatisticsScreen.trackersCompleteCount")
-            if newValue > currentStoredValue {
-                UserDefaults.standard.set(newValue, forKey: "StatisticsScreen.trackersCompleteCount")
-            }
+            UserDefaults.standard.set(newValue, forKey: "StatisticsScreen.trackersCompleteCount")
         }
     }
-
+    
     public var averageCount: Int {
         get {
             return UserDefaults.standard.integer(forKey: "StatisticsScreen.averageCount")
         }
         set {
-            let currentStoredValue = UserDefaults.standard.integer(forKey: "StatisticsScreen.averageCount")
-            if newValue > currentStoredValue {
-                UserDefaults.standard.set(newValue, forKey: "StatisticsScreen.averageCount")
-            }
+            UserDefaults.standard.set(newValue, forKey: "StatisticsScreen.averageCount")
         }
     }
-
+    
     public var bestPeriodCount: Int {
         get {
             return UserDefaults.standard.integer(forKey: "StatisticsScreen.bestPeriodCount")
         }
         set {
-            let currentStoredValue = UserDefaults.standard.integer(forKey: "StatisticsScreen.bestPeriodCount")
-            if newValue > currentStoredValue {
-                UserDefaults.standard.set(newValue, forKey: "StatisticsScreen.bestPeriodCount")
-            }
+            UserDefaults.standard.set(newValue, forKey: "StatisticsScreen.bestPeriodCount")
         }
     }
     
@@ -248,10 +236,14 @@ final class StatisticsStore {
     }
     
     public func clearStatistics() {
-        perfectDaysCount = 0
-        averageCount = 0
-        bestPeriodCount = 0
-        trackersCompleteCount = 0
+        let defaults = UserDefaults.standard
+        defaults.set(0, forKey: "StatisticsScreen.perfectDaysCount")
+        defaults.set(0, forKey: "StatisticsScreen.trackersCompleteCount")
+        defaults.set(0, forKey: "StatisticsScreen.averageCount")
+        defaults.set(0, forKey: "StatisticsScreen.bestPeriodCount")
+        
+        defaults.synchronize()
+        
     }
 }
 

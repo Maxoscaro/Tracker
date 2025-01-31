@@ -92,16 +92,25 @@ final class StatisticsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateStatisticsData()
-        updateUI()
     }
     
     // MARK: - UI Methods
     private func updateStatisticsData() {
-        let earliestRecord = trackerRecordStore.fetchEarliestTrackerRecord()
-        guard let date = earliestRecord?.date else {
-            return
-        }
-        statisticsStore.updateStatistics(with: date, trackerStore: self.trackerStore)
+        let totalRecords = statisticsStore.fetchAllRecordsCount()
+        
+         if totalRecords > 0 {
+             guard let date = trackerRecordStore.fetchEarliestTrackerRecord()?.date else {
+            
+                 return
+             }
+             
+             statisticsStore.updateStatistics(with: date, trackerStore: self.trackerStore)
+         } else {
+           
+             statisticsStore.clearStatistics()
+         }
+        
+        updateUI()
     }
     
     private func updateUI() {
@@ -121,7 +130,6 @@ final class StatisticsViewController: UIViewController {
         ].forEach { title, value in
             let counterView = createCounterView(title: title, value: value)
             statsStackView.addArrangedSubview(counterView)
-            
         }
     }
     

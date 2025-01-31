@@ -21,7 +21,7 @@ final class TrackersViewController: UIViewController, TrackerStoreDelegate {
     
     var categories: [TrackerCategory] = []
     var completedTrackers: [TrackerRecord] = []
-    let analyticsService: AnalyticsService
+    let analyticsService = AnalyticsService()
     
     // MARK: - Private Properties
     
@@ -88,9 +88,8 @@ final class TrackersViewController: UIViewController, TrackerStoreDelegate {
     
     // MARK: - Initialization
     
-    init(trackerStore: TrackerStore,  analyticsService: AnalyticsService) {
+    init(trackerStore: TrackerStore) {
         self.trackerStore = trackerStore
-        self.analyticsService = analyticsService
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -224,7 +223,7 @@ final class TrackersViewController: UIViewController, TrackerStoreDelegate {
         
         let imageView = UIImageView(image: UIImage(named: "emptyTrackersIcon"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(imageView)
+        emptyStateView.addSubview(imageView)
         
         let label = UILabel()
         label.text = LocalizedStrings.Trackers.placeholderText
